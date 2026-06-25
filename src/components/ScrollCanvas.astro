@@ -1,0 +1,499 @@
+---
+---
+
+<div class="scroll-cinema" id="scroll-cinema">
+  <div class="scroll-cinema__progress" id="cinema-progress" aria-hidden="true"></div>
+  <div class="scroll-cinema__sticky">
+    <canvas id="cinema-canvas" aria-hidden="true"></canvas>
+
+    <div class="cinema-phase" id="phase-0">
+      <div class="cinema-phase__inner">
+        <p class="cinema-phase__label">01 — Ötlet</p>
+        <h2 class="cinema-phase__title">Megírom a kódot</h2>
+        <p class="cinema-phase__desc">Minden az első sorral kezdődik. A kód formát ölt, és megszületik a vázlat.</p>
+      </div>
+    </div>
+    <div class="cinema-phase" id="phase-1">
+      <div class="cinema-phase__inner">
+        <p class="cinema-phase__label">02 — Design</p>
+        <h2 class="cinema-phase__title">Felépül a weboldal</h2>
+        <p class="cinema-phase__desc">Komponensek csapódnak a helyükre — navigáció, tartalom, gombok.</p>
+      </div>
+    </div>
+    <div class="cinema-phase" id="phase-2">
+      <div class="cinema-phase__inner">
+        <p class="cinema-phase__label">03 — Kódbázis</p>
+        <h2 class="cinema-phase__title">Verziókezelve, rendben</h2>
+        <p class="cinema-phase__desc">A projekt a kódbázisba kerül — tiszta struktúra, átlátható kód.</p>
+      </div>
+    </div>
+    <div class="cinema-phase" id="phase-3">
+      <div class="cinema-phase__inner">
+        <p class="cinema-phase__label">04 — Élesítés</p>
+        <h2 class="cinema-phase__title">Egy kattintás, és kész</h2>
+        <p class="cinema-phase__desc">Deploy — a weboldalad elérhető a világ számára.</p>
+      </div>
+    </div>
+
+    <div class="cinema-scroll-hint" id="cinema-scroll-hint">
+      <span>Görgess</span>
+      <div class="cinema-scroll-hint__line"></div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .scroll-cinema { position: relative; height: 500vh; }
+  .scroll-cinema__progress {
+    position: fixed; top: 64px; left: 0; width: 0%; height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-light), #8b5cf6);
+    z-index: 101; pointer-events: none;
+  }
+  .scroll-cinema__sticky { position: sticky; top: 0; height: 100vh; width: 100%; overflow: hidden; }
+  #cinema-canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .cinema-phase {
+    position: absolute; inset: 0; display: flex; align-items: flex-end;
+    justify-content: center; padding-bottom: 5vh; opacity: 0; pointer-events: none; z-index: 2;
+  }
+  .cinema-phase__inner { max-width: 640px; padding: 0 2rem; text-align: center; }
+  .cinema-phase__label {
+    font-family: var(--font-body); font-size: 0.7rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.3em;
+    background: linear-gradient(90deg, var(--accent), var(--accent-light));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.75rem;
+  }
+  .cinema-phase__title {
+    font-family: var(--font-display); font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 900; line-height: 1.1; letter-spacing: -0.04em;
+    color: #fff; margin-bottom: 0.75rem;
+  }
+  .cinema-phase__desc {
+    font-size: 0.9rem; line-height: 1.7; color: rgba(255,255,255,0.5); max-width: 400px;
+    margin: 0 auto; backdrop-filter: blur(4px); background: rgba(0,0,0,0.2);
+    border: 1px solid rgba(255,255,255,0.04); border-radius: 12px; padding: 0.6rem 1rem;
+  }
+  .cinema-scroll-hint {
+    position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 0.5rem; z-index: 2;
+  }
+  .cinema-scroll-hint span {
+    font-family: var(--font-body); font-size: 0.6rem;
+    text-transform: uppercase; letter-spacing: 0.25em; color: rgba(255,255,255,0.3);
+  }
+  .cinema-scroll-hint__line {
+    width: 1px; height: 40px;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.3), transparent);
+    animation: hintPulse 2s ease-in-out infinite;
+  }
+  @keyframes hintPulse { 0%,100%{opacity:.4} 50%{opacity:1} }
+  @media (prefers-reduced-motion: reduce) {
+    .scroll-cinema { height: auto; }
+    .scroll-cinema__sticky { position: relative; height: auto; min-height: 100vh; }
+    .scroll-cinema__progress, #cinema-canvas { display: none; }
+    .cinema-phase { position: relative; opacity: 1; padding: 4rem 0; }
+  }
+</style>
+
+<script>
+  function sr(s:number){const x=Math.sin(s*9301+49297)*49297;return x-Math.floor(x)}
+
+  // Code lines: color-coded horizontal bars (no real text)
+  interface CodeLine {
+    indent: number; segments: {w:number;color:string}[]; y: number; delay: number;
+    startX: number; startY: number; // initial floating position
+  }
+
+  function mkCodeLines(): CodeLine[] {
+    const colors = ['#c084fc','#60a5fa','#f9a825','#4ade80','#f472b6','#94a3b8','#e879f9','#38bdf8'];
+    const lines: CodeLine[] = [];
+    for (let i = 0; i < 18; i++) {
+      const indent = Math.floor(sr(i*7)*3);
+      const segCount = Math.floor(sr(i*13)*3)+1;
+      const segs: {w:number;color:string}[] = [];
+      for (let s = 0; s < segCount; s++) {
+        segs.push({ w: sr(i*17+s*3)*60+15, color: colors[Math.floor(sr(i*23+s)*colors.length)] });
+      }
+      lines.push({
+        indent, segments: segs, y: i * 18,
+        delay: sr(i*31)*0.5,
+        startX: (sr(i*41)-0.5)*800,
+        startY: (sr(i*43)-0.5)*600,
+      });
+    }
+    return lines;
+  }
+
+  // UI panels for website
+  interface UIPanel {
+    x:number;y:number;w:number;h:number;delay:number;type:string;
+    fromX:number;fromY:number; // fly-in origin offset
+  }
+
+  function mkPanels(): UIPanel[] {
+    return [
+      {x:.03,y:.0,w:.94,h:.065,delay:0,type:'nav',fromX:0,fromY:-200},
+      {x:.03,y:.08,w:.6,h:.42,delay:.08,type:'hero',fromX:-400,fromY:0},
+      {x:.66,y:.08,w:.31,h:.42,delay:.12,type:'side',fromX:400,fromY:0},
+      {x:.03,y:.54,w:.3,h:.22,delay:.2,type:'card',fromX:0,fromY:300},
+      {x:.35,y:.54,w:.3,h:.22,delay:.25,type:'card',fromX:0,fromY:350},
+      {x:.67,y:.54,w:.3,h:.22,delay:.3,type:'card',fromX:0,fromY:400},
+      {x:.03,y:.8,w:.94,h:.06,delay:.35,type:'footer',fromX:0,fromY:200},
+    ];
+  }
+
+  function ease(t:number){return t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2}
+
+  function draw(c:CanvasRenderingContext2D,W:number,H:number,prog:number,cls:CodeLine[],pns:UIPanel[],t:number) {
+    c.fillStyle='#0E0E18';
+    c.fillRect(0,0,W,H);
+
+    // Browser window dimensions
+    const bw = Math.min(W*0.55, 650);
+    const bh = bw * 0.7;
+    const bx = W/2 - bw/2;
+    const by = H/2 - bh/2 - 20;
+    const barH = 28;
+
+    // ─── PHASE 1: Code lines float in → form white window (0–0.25) ───
+    const p1 = Math.min(prog/0.25, 1);
+    const ep1 = ease(p1);
+
+    // Floating code lines
+    if (p1 < 1) {
+      cls.forEach((cl, i) => {
+        const lineP = Math.max(0, Math.min((p1 - cl.delay*0.3) / (1 - cl.delay*0.3), 1));
+        const ep = ease(lineP);
+
+        // Float from random position → converge toward browser center
+        const targetX = bx + 20 + cl.indent * 16;
+        const targetY = by + barH + 12 + cl.y;
+        const cx = cl.startX + (targetX - cl.startX) * ep + W/2*(1-ep);
+        const cy = cl.startY + (targetY - cl.startY) * ep + H/2*(1-ep);
+
+        // Opacity: fade in then fade as window forms
+        const alpha = Math.min(lineP * 2, 1) * (p1 < 0.8 ? 1 : 1-(p1-0.8)/0.2);
+
+        c.globalAlpha = alpha * 0.7;
+        let xOff = 0;
+        cl.segments.forEach(seg => {
+          c.fillStyle = seg.color;
+          c.beginPath();
+          c.roundRect(cx + xOff, cy, seg.w * (0.3 + ep*0.7), 8, 3);
+          c.fill();
+          xOff += seg.w * (0.3 + ep*0.7) + 6;
+        });
+        c.globalAlpha = 1;
+      });
+    }
+
+    // White browser window fades in as code converges
+    const winAlpha = p1 > 0.4 ? Math.min((p1-0.4)/0.4, 1) : 0;
+    if (winAlpha > 0) {
+      // Phase 3: window slides left into editor
+      const p3 = prog > 0.5 ? Math.min((prog-0.5)/0.25, 1) : 0;
+      const ep3 = ease(p3);
+      // Phase 4: editor slides left into Vercel
+      const p4 = prog > 0.75 ? Math.min((prog-0.75)/0.25, 1) : 0;
+      const ep4 = ease(p4);
+
+      const slideX = -ep3 * W * 0.25 - ep4 * W * 0.3;
+      const scaleDown = 1 - ep3 * 0.15 - ep4 * 0.1;
+
+      c.save();
+      c.translate(W/2 + slideX, H/2 - 20);
+      c.scale(scaleDown, scaleDown);
+      c.translate(-W/2, -H/2 + 20);
+
+      // Window shadow
+      c.shadowColor = 'rgba(0,0,0,0.4)';
+      c.shadowBlur = 30;
+      c.shadowOffsetY = 10;
+
+      // Window body
+      c.globalAlpha = winAlpha;
+      c.fillStyle = '#ffffff';
+      c.beginPath();
+      c.roundRect(bx, by, bw, bh, 10);
+      c.fill();
+
+      c.shadowBlur = 0;
+      c.shadowOffsetY = 0;
+
+      // Title bar
+      c.fillStyle = '#e5e5e5';
+      c.beginPath();
+      c.roundRect(bx, by, bw, barH, [10,10,0,0]);
+      c.fill();
+
+      // Traffic lights
+      const dots = ['#ff5f57','#febc2e','#28c840'];
+      dots.forEach((col,i) => {
+        c.fillStyle = col;
+        c.beginPath();
+        c.arc(bx+16+i*16, by+barH/2, 5, 0, Math.PI*2);
+        c.fill();
+      });
+
+      // URL bar shape
+      c.fillStyle = '#d4d4d4';
+      c.beginPath();
+      c.roundRect(bx+bw*0.25, by+7, bw*0.5, 14, 7);
+      c.fill();
+
+      // ─── PHASE 2: Components snap onto window (0.25–0.5) ───
+      const p2 = prog > 0.25 ? Math.min((prog-0.25)/0.25, 1) : 0;
+
+      if (p2 > 0) {
+        // Clip to window body
+        c.save();
+        c.beginPath();
+        c.roundRect(bx+1, by+barH, bw-2, bh-barH-1, [0,0,9,9]);
+        c.clip();
+
+        const contentX = bx + 1;
+        const contentY = by + barH;
+        const contentW = bw - 2;
+        const contentH = bh - barH - 1;
+
+        pns.forEach(pn => {
+          const pp = Math.max(0, Math.min((p2-pn.delay)/(1-pn.delay), 1));
+          if (pp <= 0) return;
+          const ep = ease(pp);
+
+          const px = contentX + pn.x * contentW;
+          const py = contentY + pn.y * contentH;
+          const pw = pn.w * contentW;
+          const ph = pn.h * contentH;
+
+          // Fly in from offset
+          const fx = px + pn.fromX * (1-ep);
+          const fy = py + pn.fromY * (1-ep);
+
+          c.globalAlpha = ep;
+
+          if (pn.type === 'nav') {
+            c.fillStyle = '#f8f8f8';
+            c.fillRect(fx, fy, pw, ph);
+            c.fillStyle = '#e0e0e0';
+            c.beginPath(); c.roundRect(fx+pw*0.02, fy+ph*0.2, pw*0.08, ph*0.6, 3); c.fill();
+            for(let i=0;i<4;i++){c.fillStyle='#d0d0d0';c.beginPath();c.roundRect(fx+pw*0.5+i*pw*0.11,fy+ph*0.25,pw*0.08,ph*0.5,2);c.fill()}
+            c.fillStyle='#C07D0E'; c.beginPath();c.roundRect(fx+pw*0.88,fy+ph*0.2,pw*0.1,ph*0.6,3);c.fill();
+          } else if (pn.type === 'hero') {
+            c.fillStyle = '#f0f0f0';
+            c.beginPath(); c.roundRect(fx, fy, pw, ph, 6); c.fill();
+            c.fillStyle = '#d8d8d8'; c.fillRect(fx+pw*0.05,fy+ph*0.12,pw*0.7,ph*0.1);
+            c.fillStyle = '#e2e2e2'; c.fillRect(fx+pw*0.05,fy+ph*0.3,pw*0.5,ph*0.06);
+            c.fillRect(fx+pw*0.05,fy+ph*0.4,pw*0.4,ph*0.06);
+            c.fillStyle='#C07D0E'; c.beginPath();c.roundRect(fx+pw*0.05,fy+ph*0.58,pw*0.22,ph*0.1,4);c.fill();
+            c.fillStyle='#e0e0e0'; c.beginPath();c.roundRect(fx+pw*0.3,fy+ph*0.58,pw*0.22,ph*0.1,4);c.fill();
+          } else if (pn.type === 'side') {
+            c.fillStyle = '#f5f5f5';
+            c.beginPath(); c.roundRect(fx, fy, pw, ph, 6); c.fill();
+            c.fillStyle = '#e8e8e8';
+            c.fillRect(fx+pw*0.08,fy+ph*0.06,pw*0.84,ph*0.5);
+            for(let i=0;i<3;i++){c.fillStyle='#ddd';c.fillRect(fx+pw*0.08,fy+ph*(0.62+i*0.1),pw*0.6,ph*0.05)}
+          } else if (pn.type === 'card') {
+            c.fillStyle = '#fafafa';
+            c.strokeStyle = '#e8e8e8'; c.lineWidth = 1;
+            c.beginPath(); c.roundRect(fx, fy, pw, ph, 6); c.fill(); c.stroke();
+            c.fillStyle = '#eee'; c.fillRect(fx+pw*0.08,fy+ph*0.08,pw*0.84,ph*0.45);
+            c.fillStyle = '#ddd'; c.fillRect(fx+pw*0.08,fy+ph*0.6,pw*0.6,ph*0.08);
+            c.fillRect(fx+pw*0.08,fy+ph*0.74,pw*0.4,ph*0.06);
+          } else if (pn.type === 'footer') {
+            c.fillStyle = '#1a1a2e';
+            c.beginPath(); c.roundRect(fx, fy, pw, ph, [0,0,9,9]); c.fill();
+            c.fillStyle = 'rgba(255,255,255,0.15)';
+            for(let i=0;i<4;i++) c.fillRect(fx+pw*(0.05+i*0.22),fy+ph*0.3,pw*0.12,ph*0.4);
+          }
+          c.globalAlpha = 1;
+        });
+
+        c.restore(); // unclip
+      }
+
+      c.restore(); // un-translate
+
+      // ─── PHASE 3: Editor frame appears (0.5–0.75) ───
+      if (p3 > 0) {
+        const edX = W*0.55 - ep3*W*0.05;
+        const edY = H*0.08;
+        const edW = W*0.48;
+        const edH = H*0.84;
+
+        c.save();
+        c.globalAlpha = ep3;
+
+        // Editor window
+        c.shadowColor = 'rgba(0,0,0,0.3)'; c.shadowBlur = 20;
+        c.fillStyle = '#1e1e2e';
+        c.beginPath(); c.roundRect(edX, edY, edW, edH, 10); c.fill();
+        c.shadowBlur = 0;
+
+        // Editor title bar
+        c.fillStyle = '#2d2d3f';
+        c.beginPath(); c.roundRect(edX, edY, edW, 30, [10,10,0,0]); c.fill();
+
+        // Tab
+        c.fillStyle = '#1e1e2e';
+        c.beginPath(); c.roundRect(edX+8, edY+4, 100, 22, [5,5,0,0]); c.fill();
+        c.fillStyle = '#666'; c.fillRect(edX+16, edY+12, 50, 6);
+
+        // Line numbers gutter
+        c.fillStyle = '#252535';
+        c.fillRect(edX, edY+30, 35, edH-30);
+
+        // Code lines in editor
+        const codeColors = ['#c084fc','#60a5fa','#f9a825','#4ade80','#94a3b8','#f472b6','#38bdf8'];
+        for (let i = 0; i < 28; i++) {
+          const ly = edY + 38 + i * 17;
+          if (ly > edY + edH - 10) break;
+
+          // Line number
+          c.fillStyle = 'rgba(255,255,255,0.15)';
+          c.fillRect(edX+8, ly+2, 18, 7);
+
+          // Code segments
+          const indent = Math.floor(sr(i*7)*4) * 12;
+          let xo = edX + 42 + indent;
+          const segN = Math.floor(sr(i*13)*3)+1;
+          for (let s = 0; s < segN; s++) {
+            const sw = sr(i*17+s)*50+12;
+            c.fillStyle = codeColors[Math.floor(sr(i*23+s)*codeColors.length)];
+            c.globalAlpha = ep3 * 0.7;
+            c.beginPath(); c.roundRect(xo, ly, sw, 9, 2); c.fill();
+            xo += sw + 5;
+          }
+          c.globalAlpha = ep3;
+        }
+
+        // Terminal at bottom
+        const termY = edY + edH * 0.78;
+        c.fillStyle = '#141420';
+        c.beginPath(); c.roundRect(edX+1, termY, edW-2, edH*0.22-1, [0,0,9,9]); c.fill();
+        c.fillStyle = '#333'; c.fillRect(edX+1, termY, edW-2, 1);
+
+        // Terminal prompt
+        c.fillStyle = '#4ade80'; c.globalAlpha = ep3*0.8;
+        c.beginPath(); c.roundRect(edX+12, termY+12, 8, 8, 2); c.fill();
+        c.fillStyle = '#94a3b8';
+        c.beginPath(); c.roundRect(edX+26, termY+12, 80, 8, 2); c.fill();
+
+        // git push line
+        if (p3 > 0.5) {
+          c.fillStyle = '#60a5fa'; c.globalAlpha = (p3-0.5)*2*0.6;
+          c.beginPath(); c.roundRect(edX+12, termY+28, 6, 8, 2); c.fill();
+          c.fillStyle = '#94a3b8';
+          c.beginPath(); c.roundRect(edX+24, termY+28, 65, 8, 2); c.fill();
+        }
+
+        c.globalAlpha = 1;
+        c.restore();
+      }
+
+      // ─── PHASE 4: Vercel deploy panel (0.75–1.0) ───
+      if (p4 > 0) {
+        const vx = W*0.62;
+        const vy = H*0.15;
+        const vw = W*0.35;
+        const vh = H*0.7;
+
+        c.save();
+        c.globalAlpha = ep4;
+
+        // Vercel panel
+        c.shadowColor = 'rgba(0,0,0,0.3)'; c.shadowBlur = 25;
+        c.fillStyle = '#000';
+        c.beginPath(); c.roundRect(vx, vy, vw, vh, 12); c.fill();
+        c.shadowBlur = 0;
+        c.strokeStyle = 'rgba(255,255,255,0.08)'; c.lineWidth = 1;
+        c.beginPath(); c.roundRect(vx, vy, vw, vh, 12); c.stroke();
+
+        // Vercel triangle logo
+        const lx = vx+vw/2, ly2 = vy+45;
+        c.fillStyle = '#fff';
+        c.beginPath(); c.moveTo(lx,ly2-14); c.lineTo(lx+14,ly2+10); c.lineTo(lx-14,ly2+10); c.closePath(); c.fill();
+
+        // "Deployment" bar placeholder
+        c.fillStyle = 'rgba(255,255,255,0.08)';
+        c.beginPath(); c.roundRect(vx+vw*0.08, vy+80, vw*0.84, 35, 6); c.fill();
+        // Status dot
+        const dotColor = p4 > 0.6 ? '#4ade80' : '#f9a825';
+        c.fillStyle = dotColor;
+        c.beginPath(); c.arc(vx+vw*0.14, vy+97, 5, 0, Math.PI*2); c.fill();
+        // Status bar
+        c.fillStyle = 'rgba(255,255,255,0.15)';
+        c.beginPath(); c.roundRect(vx+vw*0.2, vy+93, vw*0.35, 8, 3); c.fill();
+
+        // Progress bar
+        const pbY = vy + 135;
+        c.fillStyle = 'rgba(255,255,255,0.06)';
+        c.beginPath(); c.roundRect(vx+vw*0.08, pbY, vw*0.84, 6, 3); c.fill();
+        const pbFill = Math.min(p4 * 1.5, 1);
+        c.fillStyle = '#4ade80';
+        c.beginPath(); c.roundRect(vx+vw*0.08, pbY, vw*0.84*pbFill, 6, 3); c.fill();
+
+        // Deploy details lines
+        const details = [160, 185, 210, 235, 260];
+        details.forEach((dy, i) => {
+          const detP = Math.max(0, (p4 - 0.2 - i*0.08));
+          if (detP <= 0) return;
+          c.globalAlpha = Math.min(detP*3, 1) * ep4;
+
+          // Checkmark
+          if (p4 > 0.5 + i*0.08) {
+            c.fillStyle = '#4ade80';
+            c.beginPath(); c.arc(vx+vw*0.12, vy+dy+4, 4, 0, Math.PI*2); c.fill();
+          }
+          // Label
+          c.fillStyle = 'rgba(255,255,255,0.3)';
+          c.beginPath(); c.roundRect(vx+vw*0.18, vy+dy, vw*(0.2+sr(i*7)*0.25), 8, 2); c.fill();
+          // Value
+          c.fillStyle = 'rgba(255,255,255,0.12)';
+          c.beginPath(); c.roundRect(vx+vw*0.6, vy+dy, vw*0.2, 8, 2); c.fill();
+        });
+
+        // URL at bottom
+        if (p4 > 0.7) {
+          c.globalAlpha = (p4-0.7)/0.3 * ep4;
+          c.fillStyle = 'rgba(255,255,255,0.05)';
+          c.beginPath(); c.roundRect(vx+vw*0.08, vy+vh-60, vw*0.84, 35, 6); c.fill();
+          c.strokeStyle = 'rgba(74,222,128,0.3)'; c.lineWidth = 1;
+          c.beginPath(); c.roundRect(vx+vw*0.08, vy+vh-60, vw*0.84, 35, 6); c.stroke();
+
+          // Link icon + URL bar
+          c.fillStyle = '#4ade80';
+          c.beginPath(); c.arc(vx+vw*0.15, vy+vh-43, 4, 0, Math.PI*2); c.fill();
+          c.fillStyle = 'rgba(255,255,255,0.4)';
+          c.beginPath(); c.roundRect(vx+vw*0.2, vy+vh-47, vw*0.5, 8, 2); c.fill();
+        }
+
+        c.globalAlpha = 1;
+        c.restore();
+      }
+    }
+
+    // Ambient particles (always)
+    c.globalAlpha = 0.3;
+    for (let i = 0; i < 30; i++) {
+      const px = ((sr(i*3)*2+t*0.0003*sr(i*7+1))%1)*W;
+      const py = ((sr(i*5)*2+t*0.0002*sr(i*9+2))%1)*H;
+      const s = sr(i*11)*2+0.5;
+      c.fillStyle = `hsla(${30+sr(i*13)*20},70%,60%,0.4)`;
+      c.beginPath(); c.arc(px,py,s,0,Math.PI*2); c.fill();
+    }
+    c.globalAlpha = 1;
+
+    // Vignette
+    const v = c.createRadialGradient(W/2,H/2,W*.2,W/2,H/2,W*.75);
+    v.addColorStop(0,'rgba(0,0,0,0)'); v.addColorStop(1,'rgba(14,14,24,.6)');
+    c.fillStyle = v; c.fillRect(0,0,W,H);
+  }
+
+  // ── Init ──
+  const cinema=document.getElementById('scroll-cinema'),canvas=document.getElementById('cinema-canvas') as HTMLCanvasElement|null,progBar=document.getElementById('cinema-progress'),hint=document.getElementById('cinema-scroll-hint'),phEls=[0,1,2,3].map(i=>document.getElementById(`phase-${i}`));
+  if(cinema&&canvas){const ctx=canvas.getContext('2d');if(ctx){const cls=mkCodeLines(),pns=mkPanels();let prog=0,tick=0;
+  const resize=()=>{const d=window.devicePixelRatio||1;canvas.width=innerWidth*d;canvas.height=innerHeight*d;canvas.style.width=innerWidth+'px';canvas.style.height=innerHeight+'px';ctx.setTransform(d,0,0,d,0,0)};resize();addEventListener('resize',resize);
+  addEventListener('scroll',()=>{const st=cinema.getBoundingClientRect().top+scrollY,sh=cinema.offsetHeight-innerHeight;prog=Math.max(0,Math.min((scrollY-st)/sh,1));if(progBar)progBar.style.width=prog*100+'%';if(hint)hint.style.opacity=prog<.05?'1':'0';
+  [{s:0,e:.25},{s:.25,e:.5},{s:.5,e:.75},{s:.75,e:1}].forEach((ph,i)=>{const el=phEls[i];if(!el)return;const mid=(ph.s+ph.e)/2,hr=(ph.e-ph.s)/2*.55,dist=Math.abs(prog-mid);if(dist<hr){const f=1-dist/hr,e2=f*f*(3-2*f);el.style.opacity=String(e2);el.style.transform=`translateY(${(1-e2)*20}px)`}else{el.style.opacity='0';el.style.transform='translateY(20px)'}})},{passive:true});
+  const loop=()=>{tick++;ctx.setTransform(devicePixelRatio||1,0,0,devicePixelRatio||1,0,0);draw(ctx,innerWidth,innerHeight,prog,cls,pns,tick);requestAnimationFrame(loop)};requestAnimationFrame(loop)}}
+</script>

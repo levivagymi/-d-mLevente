@@ -1,0 +1,52 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout
+  title="Impresszum | Ádám Levente"
+  description="Ádám Levente webfejlesztő impresszuma – üzemeltető adatai, kapcsolati információk."
+  canonical="https://adamlevente.hu/impresszum/"
+  noindex={true}
+>
+  <Header />
+  <main id="main-content">
+    <div class="page-hero">
+      <div class="container">
+        <h1>Impresszum</h1>
+      </div>
+    </div>
+    <div class="container">
+      <div class="legal-content">
+        <h2>Üzemeltető adatai</h2>
+        <p><strong>Név:</strong> Ádám Levente</p>
+        <p><strong>Email:</strong> <a href="mailto:adam@adamlevente.hu">adam@adamlevente.hu</a></p>
+        <p><strong>Ország:</strong> Magyarország</p>
+        <p><strong>Weboldal:</strong> <a href="https://adamlevente.hu">https://adamlevente.hu</a></p>
+
+        <h2>Szerzői jog</h2>
+        <p>
+          A weboldal tartalma (szövegek, képek, grafikai elemek) szerzői jogi védelem alatt áll.
+          A tartalom bármilyen felhasználása csak az üzemeltető előzetes írásos hozzájárulásával
+          lehetséges.
+        </p>
+
+        <h2>Felelősségkizárás</h2>
+        <p>
+          A weboldal tartalma tájékoztató jellegű. Az üzemeltető nem vállal felelősséget az
+          információk pontosságáért, teljességéért vagy időszerűségéért. A külső hivatkozásokért
+          (linkek) az üzemeltető nem vállal felelősséget.
+        </p>
+
+        <h2>Technikai adatok</h2>
+        <p>
+          A weboldal Astro keretrendszer segítségével készült, és statikus HTML tartalomként
+          kerül kiszolgálásra. Az oldal nem tárol személyes adatokat szerver oldalon a
+          kapcsolatfelvételi formnyomtatvány beküldésén túl.
+        </p>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</Layout>

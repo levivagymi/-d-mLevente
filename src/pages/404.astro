@@ -1,0 +1,27 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout
+  title="404 – Az oldal nem található | Ádám Levente"
+  description="A keresett oldal nem létezik."
+  noindex={true}
+>
+  <Header />
+  <main id="main-content">
+    <div class="not-found">
+      <div class="container" style="text-align:center;">
+        <div class="not-found__code">404</div>
+        <h1>Az oldal nem található</h1>
+        <p>A keresett oldal nem létezik vagy áthelyezésre került.</p>
+        <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+          <a href="/" class="btn btn-primary">← Vissza a főoldalra</a>
+          <a href="/blog/" class="btn btn-outline">Blog megtekintése</a>
+        </div>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</Layout>

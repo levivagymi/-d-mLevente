@@ -1,0 +1,71 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { blogPosts } from '../../data/blogPosts';
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Főoldal', item: 'https://adamlevente.hu/' },
+    { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://adamlevente.hu/blog/' },
+  ],
+};
+---
+
+<Layout
+  title="Blog – Webfejlesztés, SEO, modern technológiák | Ádám Levente"
+  description="Webfejlesztésről, SEO-ról és modern technológiákról szóló cikkek vállalkozóknak és fejlesztőknek. Gyakorlati tippek és útmutatók."
+  canonical="https://adamlevente.hu/blog/"
+  schema={breadcrumbSchema}
+>
+  <Header />
+  <main id="main-content">
+    <div class="page-hero">
+      <div class="container">
+        <div class="section-tag">Blog</div>
+        <h1>Webfejlesztés &amp; SEO blog</h1>
+        <p>
+          Praktikus tippek, útmutatók és iparági betekintések webfejlesztőknek és vállalkozóknak.
+        </p>
+      </div>
+    </div>
+
+    <nav class="breadcrumb container" aria-label="Navigációs útvonal">
+      <ol>
+        <li><a href="/">Főoldal</a></li>
+        <li aria-current="page">Blog</li>
+      </ol>
+    </nav>
+
+    <section class="section" aria-label="Blog cikkek">
+      <div class="container">
+        <div class="blog__grid">
+          {blogPosts.map((post) => (
+            <article class="blog-card">
+              <div class="blog-card__cover" aria-hidden="true">
+                <span style="font-family:var(--font-display);font-size:1.5rem;font-weight:900;color:var(--accent);opacity:0.5;letter-spacing:-0.04em;">{post.category.slice(0,3).toUpperCase()}</span>
+              </div>
+              <div class="blog-card__body">
+                <div class="blog-card__meta">
+                  <span class="blog-card__category">{post.category}</span>
+                  <time class="blog-card__date" datetime={post.dateISO}>{post.date}</time>
+                  <span class="blog-card__date">· {post.readTime}</span>
+                </div>
+                <h2 class="blog-card__title">
+                  <a href={`/blog/${post.slug}/`}>{post.title}</a>
+                </h2>
+                <p class="blog-card__excerpt">{post.excerpt}</p>
+                <a href={`/blog/${post.slug}/`} class="blog-card__read">
+                  Olvasás →
+                </a>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>

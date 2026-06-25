@@ -1,0 +1,53 @@
+---
+import { projects } from '../data/projects';
+---
+
+<section class="section" id="portfolio" aria-labelledby="portfolio-heading">
+  <div class="container">
+    <div class="section-header reveal-blur">
+      <div class="section-tag">Portfólió</div>
+      <h2 id="portfolio-heading" class="section-title">
+        Néhány <span>projekt</span>, amin dolgoztam
+      </h2>
+      <p class="section-desc">
+        Íme néhány projekt, amelyet az elmúlt időszakban készítettem ügyfeleim számára.
+      </p>
+    </div>
+
+    <div class="portfolio__grid">
+      {projects.map((project, i) => (
+        <article class={`portfolio-card reveal-scale cin-delay-${(i % 3) + 1}`}>
+          <div class="portfolio-card__image" role="img" aria-label={project.altText}>
+            <span style="font-family:var(--font-display);font-size:2rem;font-weight:900;color:var(--text-muted);opacity:0.35;letter-spacing:-0.05em;">
+              {String(i + 1).padStart(2, '0')}
+            </span>
+          </div>
+          <div class="portfolio-card__body">
+            <h3 class="portfolio-card__title">{project.title}</h3>
+            <p class="portfolio-card__desc">{project.description}</p>
+            <div class="portfolio-card__tech">
+              {project.tech.map((tech) => (
+                <span class="badge">{tech}</span>
+              ))}
+            </div>
+            {project.url !== '#' ? (
+              <a
+                href={project.url}
+                class="portfolio-card__link"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`${project.title} weboldal megtekintése (új ablakban nyílik)`}
+              >
+                {project.title} megtekintése
+              </a>
+            ) : (
+              <span class="portfolio-card__link" style="color:var(--text-muted);cursor:default;">
+                Privát projekt
+              </span>
+            )}
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

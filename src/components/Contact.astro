@@ -1,0 +1,172 @@
+---
+---
+
+<section class="section section--alt" id="contact" aria-labelledby="contact-heading">
+  <div class="container">
+    <div class="contact__inner">
+      <div>
+        <p class="section-label reveal-blur">Kapcsolat</p>
+        <h2 id="contact-heading" class="reveal-left cin-delay-1">Dolgozzunk <span style="color:var(--accent);">együtt</span>!</h2>
+        <p class="reveal-left cin-delay-2" style="margin-bottom:2rem;">
+          Van egy projekted, vagy csak kérdésed van? Írj bátran!
+          Általában 24 órán belül válaszolok, és ingyenes konzultációt
+          kínálok minden érdeklődőnek – kötelezettség nélkül.
+        </p>
+
+        <div class="contact__detail reveal-left cin-delay-3">
+          <div class="contact__detail-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,12 2,6"/>
+            </svg>
+          </div>
+          <div>
+            <div class="contact__detail-label">Email</div>
+            <a href="mailto:adam@adamlevente.hu" class="contact__detail-value">
+              adam@adamlevente.hu
+            </a>
+          </div>
+        </div>
+
+        <div class="contact__detail reveal-left cin-delay-3">
+          <div class="contact__detail-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+            </svg>
+          </div>
+          <div>
+            <div class="contact__detail-label">Helyszín</div>
+            <div class="contact__detail-value">Magyarország (remote elérhető)</div>
+          </div>
+        </div>
+
+        <div class="contact__detail reveal-left cin-delay-4">
+          <div class="contact__detail-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+            </svg>
+          </div>
+          <div>
+            <div class="contact__detail-label">Válaszidő</div>
+            <div class="contact__detail-value">Általában 24 órán belül</div>
+          </div>
+        </div>
+
+        <div class="contact__detail reveal-left cin-delay-4">
+          <div class="contact__detail-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+          <div>
+            <div class="contact__detail-label">Ingyenes konzultáció</div>
+            <div class="contact__detail-value">Minden új projekthez</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form reveal-scale cin-delay-2" role="region" aria-labelledby="contact-heading">
+        <form
+          aria-label="Kapcsolatfelvételi form"
+          id="contact-form"
+          action="#"
+          method="POST"
+        >
+          <div class="form__honeypot" aria-hidden="true">
+            <label for="hp-field">Ne töltsd ki</label>
+            <input type="text" id="hp-field" name="hp_field" tabindex="-1" autocomplete="off" />
+          </div>
+
+          <div class="form__grid">
+            <div class="form__group">
+              <label class="form__label" for="contact-name">Neved *</label>
+              <input
+                class="form__input"
+                type="text"
+                id="contact-name"
+                name="name"
+                required
+                autocomplete="name"
+                placeholder="Kovács János"
+              />
+            </div>
+            <div class="form__group">
+              <label class="form__label" for="contact-email">Email cím *</label>
+              <input
+                class="form__input"
+                type="email"
+                id="contact-email"
+                name="email"
+                required
+                autocomplete="email"
+                placeholder="kovacs@pelda.hu"
+              />
+            </div>
+          </div>
+
+          <div class="form__group">
+            <label class="form__label" for="contact-subject">Tárgy</label>
+            <input
+              class="form__input"
+              type="text"
+              id="contact-subject"
+              name="subject"
+              placeholder="Weboldal fejlesztés érdeklődés"
+            />
+          </div>
+
+          <div class="form__group">
+            <label class="form__label" for="contact-message">Üzenet *</label>
+            <textarea
+              class="form__textarea"
+              id="contact-message"
+              name="message"
+              required
+              placeholder="Írj a projekted részleteiről – mi a cél, milyen funkciók kellenek, mi a határidő..."
+            ></textarea>
+          </div>
+
+          <div class="cf-turnstile-wrap">
+            <div
+              class="cf-turnstile"
+              data-sitekey="1x00000000000000000000AA"
+              data-theme="auto"
+              data-language="hu"
+            ></div>
+          </div>
+
+          <button type="submit" class="btn btn-primary form__submit">
+            Üzenet küldése
+          </button>
+        </form>
+
+        <div id="form-success" style="display:none;text-align:center;padding:2.5rem;">
+          <div style="width:48px;height:48px;border-radius:50%;background:var(--accent-glow);border:1px solid var(--accent);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <h3 style="margin-bottom:0.5rem;font-family:var(--font-display);">Üzenet elküldve!</h3>
+          <p>Hamarosan felveszem veled a kapcsolatot. Általában 24 órán belül válaszolok.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const form = document.getElementById('contact-form') as HTMLFormElement | null;
+  const successMsg = document.getElementById('form-success');
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const hp = (form.querySelector('#hp-field') as HTMLInputElement)?.value;
+    if (hp) return;
+
+    const btn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+    btn.textContent = 'Küldés...';
+    btn.disabled = true;
+
+    await new Promise((r) => setTimeout(r, 800));
+
+    form.style.display = 'none';
+    if (successMsg) successMsg.style.display = 'block';
+  });
+</script>

@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run *)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\narin\\.claude\\projects\\c--Users-narin-Desktop--d-mLevente\\memory"
+    ]
+  }
+}

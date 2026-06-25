@@ -1,0 +1,48 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import ScrollCanvas from '../components/ScrollCanvas.astro';
+import Hero from '../components/Hero.astro';
+import About from '../components/About.astro';
+import Skills from '../components/Skills.astro';
+import Experience from '../components/Experience.astro';
+
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  '@id': 'https://adamlevente.hu/#person',
+  name: 'Ádám Levente Dániel',
+  jobTitle: 'Szoftverfejlesztő és -tesztelő',
+  description:
+    'Végzős szoftverfejlesztő és tesztelő tanuló – frontend, backend, adatbázis, deploy.',
+  url: 'https://adamlevente.hu',
+  knowsAbout: [
+    'Webfejlesztés',
+    'Szoftvertesztelés',
+    'JavaScript',
+    'Python',
+    'Java',
+    'Supabase',
+    'Vercel',
+  ],
+  sameAs: [],
+};
+---
+
+<Layout
+  title="Ádám Levente Dániel – Szoftverfejlesztő és -tesztelő"
+  description="Végzős szoftverfejlesztő és tesztelő – frontend, backend, adatbázis, deploy. Modern technológiák, valós projekttapasztalat."
+  canonical="https://adamlevente.hu/"
+  schema={personSchema}
+>
+  <Header />
+  <main>
+    <ScrollCanvas />
+    <Hero />
+    <About />
+    <Skills />
+    <Experience />
+  </main>
+  <Footer />
+</Layout>

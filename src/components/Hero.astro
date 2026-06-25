@@ -1,0 +1,122 @@
+---
+---
+
+<section class="hero" id="main-content">
+  <div class="hero__ghost" id="hero-ghost" aria-hidden="true">developer</div>
+  <div class="hero__ghost hero__ghost--2" id="hero-ghost-2" aria-hidden="true">tester</div>
+  <div class="cin-float cin-float--1" aria-hidden="true"></div>
+  <div class="cin-float cin-float--2" aria-hidden="true"></div>
+
+  <div class="container">
+    <div class="hero__inner">
+      <div>
+        <p class="section-label reveal-blur">Szoftverfejlesztő &amp; Tesztelő</p>
+        <h1 class="hero__title reveal" id="hero-title">
+          Ádám<br /><em>Levente</em>
+        </h1>
+      </div>
+
+      <div class="hero__aside">
+        <p class="hero__desc reveal-right cin-delay-2">
+          Végzős szoftverfejlesztő és tesztelő tanuló vagyok, aki a
+          <strong>modern webtechnológiákat</strong> használva hoz létre
+          valódi, működő alkalmazásokat — fronttól a deployig.
+        </p>
+
+        <div class="hero__tech reveal-blur cin-delay-3">
+          <span class="badge">JavaScript</span>
+          <span class="badge">Python</span>
+          <span class="badge">Java</span>
+          <span class="badge">SQL</span>
+          <span class="badge">Supabase</span>
+          <span class="badge">Vercel</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="cin-divider" aria-hidden="true"></div>
+
+    <div class="hero__stats">
+      <div class="hero__stat reveal cin-delay-1">
+        <div class="hero__stat-nums">
+          <span class="hero__stat-num" data-count="5">5</span>
+        </div>
+        <span class="hero__stat-label">év tanulmány</span>
+      </div>
+      <div class="hero__stat reveal cin-delay-2">
+        <div class="hero__stat-nums">
+          <span class="hero__stat-num">4,5</span>
+        </div>
+        <span class="hero__stat-label">tanulmányi átlag</span>
+      </div>
+      <div class="hero__stat reveal cin-delay-3">
+        <div class="hero__stat-nums">
+          <span class="hero__stat-num" data-count="6">6</span><span class="hero__stat-num">+</span>
+        </div>
+        <span class="hero__stat-label">programnyelv</span>
+      </div>
+      <div class="hero__stat reveal cin-delay-4">
+        <div class="hero__stat-nums">
+          <span class="hero__stat-num">1</span>
+        </div>
+        <span class="hero__stat-label">valós ügyfélprojekt</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const ghost1 = document.getElementById('hero-ghost');
+  const ghost2 = document.getElementById('hero-ghost-2');
+  const floats = document.querySelectorAll<HTMLElement>('.cin-float');
+  if (ghost1 || ghost2 || floats.length) {
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY;
+      if (ghost1) ghost1.style.transform = `translateY(${y * 0.30}px)`;
+      if (ghost2) ghost2.style.transform = `translateY(${y * 0.18}px)`;
+      floats.forEach((f, i) => {
+        f.style.transform = `translateY(${y * (i === 0 ? 0.12 : -0.08)}px)`;
+      });
+    }, { passive: true });
+  }
+
+  const heroTitle = document.getElementById('hero-title');
+  if (heroTitle) {
+    const html = heroTitle.innerHTML;
+    heroTitle.innerHTML = html.replace(/(<[^>]+>)|([^<\s])/g, (match, tag, char) => {
+      if (tag) return tag;
+      return `<span class="char">${char}</span>`;
+    });
+    const chars = heroTitle.querySelectorAll('.char');
+    chars.forEach((c, i) => {
+      (c as HTMLElement).style.transitionDelay = `${0.3 + i * 0.04}s`;
+    });
+  }
+
+  function animateCount(el: HTMLElement, target: number, duration = 900) {
+    el.classList.add('counting');
+    const start = performance.now();
+    const update = (now: number) => {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const ease = 1 - Math.pow(1 - progress, 3);
+      el.textContent = String(Math.round(ease * target));
+      if (progress < 1) { requestAnimationFrame(update); }
+      else { el.classList.remove('counting'); el.classList.add('counted'); }
+    };
+    requestAnimationFrame(update);
+  }
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        const el = entry.target as HTMLElement;
+        const target = parseInt(el.dataset.count || '0', 10);
+        if (target) animateCount(el, target);
+        io.unobserve(el);
+      }
+    });
+  }, { threshold: 0.5 });
+
+  document.querySelectorAll<HTMLElement>('[data-count]').forEach((el) => io.observe(el));
+</script>

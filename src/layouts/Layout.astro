@@ -1,0 +1,134 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  canonical?: string;
+  ogType?: string;
+  ogImage?: string;
+  lang?: string;
+  noindex?: boolean;
+  schema?: object | object[];
+}
+
+const {
+  title,
+  description = 'Egyedi weboldal és webshop fejlesztés vállalkozásoknak. Gyors, mobilbarát, SEO-optimalizált megoldások modern technológiákkal. Ingyenes konzultáció!',
+  canonical = Astro.url.href,
+  ogType = 'website',
+  ogImage = 'https://adamlevente.hu/og-image.png',
+  lang = 'hu',
+  noindex = false,
+  schema,
+} = Astro.props;
+
+const siteUrl = 'https://adamlevente.hu';
+const canonicalUrl = canonical.replace(/\/$/, '') + '/';
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#C07D0E" />
+
+    <!-- Title & Description -->
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+
+    <!-- Canonical -->
+    <link rel="canonical" href={canonicalUrl} />
+
+    <!-- hreflang -->
+    <link rel="alternate" hreflang="hu" href={siteUrl + '/'} />
+    <link rel="alternate" hreflang="en" href={siteUrl + '/en/'} />
+    <link rel="alternate" hreflang="x-default" href={siteUrl + '/'} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content={ogType} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content={lang === 'hu' ? 'hu_HU' : 'en_GB'} />
+    <meta property="og:site_name" content="Ádám Levente" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <!-- Sitemap -->
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <!-- Performance hints -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,700;0,9..144,900;1,9..144,300;1,9..144,400&family=DM+Sans:wght@400;500;600;700&display=swap"
+    />
+
+    <!-- Cloudflare Turnstile (replace data-sitekey with your real key from dash.cloudflare.com) -->
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
+    <!-- Schema.org -->
+    {schema && (
+      <script type="application/ld+json" set:html={JSON.stringify(Array.isArray(schema) ? schema : [schema])} />
+    )}
+
+    <!-- Dark mode: run before paint to avoid flash -->
+    <script is:inline>
+      (function() {
+        try {
+          var stored = localStorage.getItem('theme');
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = stored || (prefersDark ? 'dark' : 'light');
+          document.documentElement.setAttribute('data-theme', theme);
+        } catch(e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <a href="#main-content" class="skip-link">Ugrás a tartalomhoz</a>
+    <div class="scroll-progress" id="scroll-progress" aria-hidden="true"></div>
+    <slot />
+    <script is:inline>
+      document.addEventListener('DOMContentLoaded', function () {
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              io.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.1, rootMargin: '0px 0px -48px 0px' });
+        var selectors = '.reveal, .reveal-left, .reveal-right, .reveal-scale, .reveal-blur, .reveal-clip, .cin-divider';
+        document.querySelectorAll(selectors).forEach(function (el) {
+          io.observe(el);
+        });
+
+        var progressBar = document.getElementById('scroll-progress');
+        if (progressBar) {
+          window.addEventListener('scroll', function () {
+            var scrollTop = window.scrollY;
+            var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            var progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+            progressBar.style.width = progress + '%';
+          }, { passive: true });
+        }
+      });
+    </script>
+  </body>
+</html>
