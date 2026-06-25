@@ -1,6 +1,0 @@
-User-agent: *
-Allow: /
-Disallow: /api/
-Disallow: /_astro/
-
-Sitemap: https://adamlevente.hu/sitemap-index.xml
