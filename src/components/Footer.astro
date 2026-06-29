@@ -1,5 +1,4 @@
 ---
-import { cities } from '../data/cities';
 ---
 
 <footer class="footer">
@@ -8,11 +7,11 @@ import { cities } from '../data/cities';
       <div class="footer__brand">
         <a href="/" class="footer__logo">Ádám <span>Levente</span></a>
         <p class="footer__tagline">
-          Egyedi weboldal és webshop fejlesztés vállalkozásoknak.<br />
-          Modern technológiák, gyors betöltés, kiváló SEO.
+          Szoftverfejlesztő és -tesztelő.<br />
+          Modern technológiák, valós projekttapasztalat.
         </p>
-        <a href="mailto:adam@adamlevente.hu" class="footer__email">
-          adam@adamlevente.hu
+        <a href="mailto:adam.levente.daniel@gmail.com" class="footer__email">
+          adam.levente.daniel@gmail.com
         </a>
       </div>
 
@@ -20,36 +19,11 @@ import { cities } from '../data/cities';
         <div class="footer__heading">Oldaltérkép</div>
         <ul class="footer__links">
           <li><a href="/" class="footer__link">Főoldal</a></li>
-          <li><a href="/#services" class="footer__link">Szolgáltatások</a></li>
-          <li><a href="/#portfolio" class="footer__link">Portfólió</a></li>
           <li><a href="/#about" class="footer__link">Rólam</a></li>
+          <li><a href="/#skills" class="footer__link">Technológiák</a></li>
+          <li><a href="/#experience" class="footer__link">Tapasztalat</a></li>
           <li><a href="/#contact" class="footer__link">Kapcsolat</a></li>
         </ul>
-      </div>
-
-      <div>
-        <div class="footer__heading">Tartalom</div>
-        <ul class="footer__links">
-          <li><a href="/blog/" class="footer__link">Blog</a></li>
-          <li><a href="/arak/" class="footer__link">Árak</a></li>
-          <li><a href="/gyik/" class="footer__link">GYIK</a></li>
-          <li><a href="/en/" class="footer__link">EN – English</a></li>
-        </ul>
-      </div>
-
-      <div>
-        <div class="footer__heading">Városok</div>
-        <nav aria-label="Városok szerinti SEO oldalak">
-          <ul class="footer__cities">
-            {cities.map((city) => (
-              <li>
-                <a href={`/varos/${city.slug}/`} class="footer__city">
-                  {city.name}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
       </div>
     </div>
 
@@ -57,11 +31,6 @@ import { cities } from '../data/cities';
       <p class="footer__copy">
         &copy; {new Date().getFullYear()} Ádám Levente – Minden jog fenntartva.
       </p>
-      <nav class="footer__legal" aria-label="Jogi dokumentumok">
-        <a href="/adatvedelem/">Adatvédelem</a>
-        <a href="/sutik/">Sütik</a>
-        <a href="/impresszum/">Impresszum</a>
-      </nav>
     </div>
   </div>
 </footer>

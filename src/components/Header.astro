@@ -1,61 +1,33 @@
 ---
-interface Props {
-  lang?: string;
-}
-const { lang = 'hu' } = Astro.props;
 ---
 
 <header class="header">
   <div class="container">
     <div class="header__inner">
-      <a href={lang === 'en' ? '/en/' : '/'} class="header__logo" aria-label="Ádám Levente – Főoldal">
+      <a href="/" class="header__logo" aria-label="Ádám Levente – Főoldal">
         Ádám <span>Levente</span>
       </a>
 
-      {lang === 'hu' ? (
-        <nav class="nav" aria-label="Főnavigáció">
-          <a href="/#about" class="nav__link">Rólam</a>
-          <a href="/#skills" class="nav__link">Technológiák</a>
-          <a href="/#experience" class="nav__link">Tapasztalat</a>
-          <a href="/en/" class="lang-switch" aria-label="Switch to English" title="Switch to English">EN</a>
-          <button
-            class="theme-toggle"
-            id="theme-toggle-desktop"
-            aria-label="Téma váltása"
-            title="Téma váltása"
-            type="button"
-          >
-            <svg class="theme-toggle__icon-light" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-            </svg>
-            <svg class="theme-toggle__icon-dark" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-            </svg>
-          </button>
-          <a href="/#experience" class="nav__link nav__cta">Tapasztalatom</a>
-        </nav>
-      ) : (
-        <nav class="nav" aria-label="Main navigation">
-          <a href="/en/#services" class="nav__link">Services</a>
-          <a href="/en/#portfolio" class="nav__link">Portfolio</a>
-          <a href="/" class="lang-switch" aria-label="Váltás magyarra" title="Váltás magyarra">HU</a>
-          <button
-            class="theme-toggle"
-            id="theme-toggle-desktop"
-            aria-label="Toggle theme"
-            title="Toggle theme"
-            type="button"
-          >
-            <svg class="theme-toggle__icon-light" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-            </svg>
-            <svg class="theme-toggle__icon-dark" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-            </svg>
-          </button>
-          <a href="/en/#contact" class="nav__link nav__cta">Contact</a>
-        </nav>
-      )}
+      <nav class="nav" aria-label="Főnavigáció">
+        <a href="/#about" class="nav__link">Rólam</a>
+        <a href="/#skills" class="nav__link">Technológiák</a>
+        <a href="/#experience" class="nav__link">Tapasztalat</a>
+        <button
+          class="theme-toggle"
+          id="theme-toggle-desktop"
+          aria-label="Téma váltása"
+          title="Téma váltása"
+          type="button"
+        >
+          <svg class="theme-toggle__icon-light" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
+          <svg class="theme-toggle__icon-dark" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+        <a href="/#experience" class="nav__link nav__cta">Tapasztalatom</a>
+      </nav>
 
       <button
         class="hamburger"
@@ -74,28 +46,13 @@ const { lang = 'hu' } = Astro.props;
 </header>
 
 <div id="mobile-menu" role="dialog" aria-label="Mobil navigáció">
-  {lang === 'hu' ? (
-    <>
-      <a href="/#about" class="nav__link">Rólam</a>
-      <a href="/#skills" class="nav__link">Technológiák</a>
-      <a href="/#experience" class="nav__link">Tapasztalat</a>
-      <a href="/en/" class="nav__link">EN – English</a>
-      <button id="theme-toggle-mobile" type="button" class="nav__link" style="background:none;border:none;cursor:pointer;text-align:left;font-family:inherit;font-size:1.05rem;color:var(--text-muted);width:100%;">
-        Téma váltása
-      </button>
-      <a href="/#experience" class="nav__link nav__cta">Tapasztalatom →</a>
-    </>
-  ) : (
-    <>
-      <a href="/en/#services" class="nav__link">Services</a>
-      <a href="/en/#portfolio" class="nav__link">Portfolio</a>
-      <a href="/" class="nav__link">HU – Magyar</a>
-      <button id="theme-toggle-mobile" type="button" class="nav__link" style="background:none;border:none;cursor:pointer;text-align:left;font-family:inherit;font-size:1.05rem;color:var(--text-muted);width:100%;">
-        Toggle theme
-      </button>
-      <a href="/en/#contact" class="nav__link nav__cta">Contact →</a>
-    </>
-  )}
+  <a href="/#about" class="nav__link">Rólam</a>
+  <a href="/#skills" class="nav__link">Technológiák</a>
+  <a href="/#experience" class="nav__link">Tapasztalat</a>
+  <button id="theme-toggle-mobile" type="button" class="nav__link" style="background:none;border:none;cursor:pointer;text-align:left;font-family:inherit;font-size:1.05rem;color:var(--text-muted);width:100%;">
+    Téma váltása
+  </button>
+  <a href="/#experience" class="nav__link nav__cta">Tapasztalatom →</a>
 </div>
 
 <script>
