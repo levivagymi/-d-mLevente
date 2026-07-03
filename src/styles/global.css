@@ -481,7 +481,7 @@ strong { color: var(--text-secondary); font-weight: 600; }
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   border-top: 1px solid var(--border);
   margin-top: 5rem;
 }
@@ -1298,7 +1298,6 @@ strong { color: var(--text-secondary); font-weight: 600; }
   .hero__stats { grid-template-columns: repeat(2, 1fr); margin-top: 3rem; }
   .hero__stat { padding: 1.75rem 1rem; }
   .hero__stat:nth-child(2) { border-right: none; }
-  .hero__stat:nth-child(3) { border-right: 1px solid var(--border); }
   .contact__inner { grid-template-columns: 1fr; gap: 3rem; }
   .form { padding: 1.75rem; }
   .form__grid { grid-template-columns: 1fr; }
