@@ -36,9 +36,7 @@
 <p align="center">
   <img src="https://trophy.ryglcloud.net/?username=levivagymi&theme=tokyonight&no-frame=true&no-bg=true&margin-w=4&cache_seconds=86400" alt="Ádám Levente Dániel's GitHub Trophies" />
 </p>
-<p align="center">
-  <img height="280em" src="https://github-readme-activity-graph.vercel.app/graph?username=levivagymi&theme=tokyonight&radius=10" alt="levivagymi's Activity Graph" />
-</p>
+
 
 
 ## 🛠️ Languages & Tools
