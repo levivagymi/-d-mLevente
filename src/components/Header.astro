@@ -4,19 +4,19 @@
 <header class="header">
   <div class="container">
     <div class="header__inner">
-      <a href="/" class="header__logo" aria-label="Ádám Levente – Főoldal">
+      <a href="/" class="header__logo" aria-label="Ádám Levente – Home">
         Ádám <span>Levente</span>
       </a>
 
-      <nav class="nav" aria-label="Főnavigáció">
-        <a href="/#about" class="nav__link">Rólam</a>
-        <a href="/#skills" class="nav__link">Technológiák</a>
-        <a href="/#experience" class="nav__link">Tapasztalat</a>
+      <nav class="nav" aria-label="Main navigation">
+        <a href="/#about" class="nav__link">About</a>
+        <a href="/#skills" class="nav__link">Tech stack</a>
+        <a href="/#experience" class="nav__link">Experience</a>
         <button
           class="theme-toggle"
           id="theme-toggle-desktop"
-          aria-label="Téma váltása"
-          title="Téma váltása"
+          aria-label="Toggle theme"
+          title="Toggle theme"
           type="button"
         >
           <svg class="theme-toggle__icon-light" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -26,14 +26,14 @@
             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
           </svg>
         </button>
-        <a href="/#experience" class="nav__link nav__cta">Tapasztalatom</a>
+        <a href="/#experience" class="nav__link nav__cta">My experience</a>
       </nav>
 
       <button
         class="hamburger"
         aria-expanded="false"
         aria-controls="mobile-menu"
-        aria-label="Menü megnyitása"
+        aria-label="Open menu"
         id="hamburger-btn"
         type="button"
       >
@@ -45,14 +45,14 @@
   </div>
 </header>
 
-<div id="mobile-menu" role="dialog" aria-label="Mobil navigáció">
-  <a href="/#about" class="nav__link">Rólam</a>
-  <a href="/#skills" class="nav__link">Technológiák</a>
-  <a href="/#experience" class="nav__link">Tapasztalat</a>
+<div id="mobile-menu" role="dialog" aria-label="Mobile navigation">
+  <a href="/#about" class="nav__link">About</a>
+  <a href="/#skills" class="nav__link">Tech stack</a>
+  <a href="/#experience" class="nav__link">Experience</a>
   <button id="theme-toggle-mobile" type="button" class="nav__link" style="background:none;border:none;cursor:pointer;text-align:left;font-family:inherit;font-size:1.05rem;color:var(--text-muted);width:100%;">
-    Téma váltása
+    Toggle theme
   </button>
-  <a href="/#experience" class="nav__link nav__cta">Tapasztalatom →</a>
+  <a href="/#experience" class="nav__link nav__cta">My experience →</a>
 </div>
 
 <script>
@@ -62,7 +62,7 @@
   btn?.addEventListener('click', () => {
     const isOpen = menu?.classList.toggle('open');
     btn.setAttribute('aria-expanded', String(isOpen));
-    btn.setAttribute('aria-label', isOpen ? 'Menü bezárása' : 'Menü megnyitása');
+    btn.setAttribute('aria-label', isOpen ? 'Close menu' : 'Open menu');
   });
   menu?.querySelectorAll('a').forEach((link) => {
     link.addEventListener('click', () => {

@@ -14,11 +14,11 @@ interface Props {
 
 const {
   title,
-  description = 'Egyedi weboldal és webshop fejlesztés vállalkozásoknak. Gyors, mobilbarát, SEO-optimalizált megoldások modern technológiákkal. Ingyenes konzultáció!',
+  description = 'Custom website and webshop development for businesses. Fast, mobile-friendly, SEO-optimized solutions built with modern technologies. Free consultation!',
   canonical = Astro.url.href,
   ogType = 'website',
   ogImage = 'https://adamlevente.hu/og-image.png',
-  lang = 'hu',
+  lang = 'en',
   noindex = false,
   schema,
 } = Astro.props;
@@ -96,7 +96,7 @@ const canonicalUrl = canonical.replace(/\/$/, '') + '/';
     </script>
   </head>
   <body>
-    <a href="#main-content" class="skip-link">Ugrás a tartalomhoz</a>
+    <a href="#main-content" class="skip-link">Skip to content</a>
     <div class="scroll-progress" id="scroll-progress" aria-hidden="true"></div>
     <slot />
     <script is:inline>

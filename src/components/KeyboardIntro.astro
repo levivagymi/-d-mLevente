@@ -16,15 +16,15 @@ const introInk = categoryById.ai.ink;
     <!-- Running head -->
     <div class="flex items-baseline justify-between gap-4 font-mono text-[0.68rem] uppercase tracking-[0.18em]">
       <p class="m-0 leading-normal text-stage-muted">
-        <span id="kbi-title" class="whitespace-nowrap text-stage-fg">Ádám Levente</span><span class="hidden sm:inline"> — szoftverfejlesztő &amp; tesztelő</span>
+        <span id="kbi-title" class="whitespace-nowrap text-stage-fg">Ádám Levente</span><span class="hidden sm:inline"> — software developer &amp; tester</span>
       </p>
       <div class="flex shrink-0 items-baseline gap-5">
-        <span class="text-stage-muted">Felfedezve <span class="text-stage-fg" data-kbi-count>0</span>/{keys.length}</span>
+        <span class="text-stage-muted">Explored <span class="text-stage-fg" data-kbi-count>0</span>/{keys.length}</span>
         <a
           href="#main-content"
           class="rounded-sm py-2 text-stage-fg underline decoration-stage-line underline-offset-4 transition-colors hover:text-stage-accent hover:decoration-stage-accent"
         >
-          Kihagyom ↓
+          Skip intro ↓
         </a>
       </div>
     </div>
@@ -42,8 +42,8 @@ const introInk = categoryById.ai.ink;
         </h2>
         <p class="kbi-story m-0 mt-3 max-w-[46ch] text-stage-fg/80 lg:max-w-[60ch]" data-kbi-story>{intro.story}</p>
         <p class="m-0 mt-3 font-mono text-[0.72rem] leading-relaxed text-stage-muted" data-kbi-hint>
-          <span class="pointer-coarse:hidden">Fuss végig az egérrel a billentyűzeten · kattints · vagy csak gépelj.</span>
-          <span class="hidden pointer-coarse:inline">Söpörj végig az ujjaddal a billentyűzeten, vagy koppints egy gombra.</span>
+          <span class="pointer-coarse:hidden">Run your mouse across the keys · click one · or just start typing.</span>
+          <span class="hidden pointer-coarse:inline">Swipe your finger across the keys, or tap one.</span>
         </p>
         <p class="m-0 mt-3 font-mono text-[0.72rem] leading-relaxed text-stage-accent" hidden data-kbi-tip></p>
         <p class="sr-only" aria-live="polite" data-kbi-live></p>
@@ -56,12 +56,12 @@ const introInk = categoryById.ai.ink;
           hidden
           data-kbi-putback
         >
-          Visszarakom
+          Put back
         </button>
         <button
           type="button"
           class="min-h-12 min-w-12 cursor-pointer rounded-md border border-stage-line bg-transparent px-4 font-sans text-base text-stage-fg transition-colors hover:border-stage-muted"
-          aria-label="Előző történet"
+          aria-label="Previous story"
           data-kbi-prev
         >
           ←
@@ -71,7 +71,7 @@ const introInk = categoryById.ai.ink;
           class="min-h-12 flex-1 cursor-pointer rounded-md border border-stage-accent bg-stage-accent px-6 font-sans text-[0.95rem] font-semibold text-stage transition-colors hover:bg-[#F8C040] lg:flex-none"
           data-kbi-next
         >
-          Mesélj tovább →
+          Tell me more →
         </button>
       </div>
     </div>
@@ -82,7 +82,7 @@ const introInk = categoryById.ai.ink;
         <div
           class="kbi-board"
           role="group"
-          aria-label="Mesélő billentyűzet: minden gomb egy rövid szakmai történet"
+          aria-label="Storytelling keyboard: every key is a short story about my work"
           aria-describedby="kbi-help"
           style={`--kw:${KEYBOARD_WIDTH};--kh:${KEYBOARD_HEIGHT}`}
           data-kbi-board
@@ -95,7 +95,7 @@ const introInk = categoryById.ai.ink;
                 type="button"
                 class="kbi-key"
                 tabindex={index === 0 ? 0 : -1}
-                aria-label={`${key.label || 'Szóköz'}: ${story.term}`}
+                aria-label={`${key.label || 'Space'}: ${story.term}`}
                 style={`--x:${key.x};--y:${key.y};--w:${key.w};--cap:${cat.cap};--side:${cat.side};--legend:${cat.legend};--ink:${cat.ink}`}
                 data-key={key.id}
                 data-single={key.label.length === 1 ? '' : undefined}
@@ -119,7 +119,7 @@ const introInk = categoryById.ai.ink;
     </div>
 
     <!-- Legend: the seven areas -->
-    <ul class="m-0 flex list-none flex-wrap justify-center gap-1 p-0" aria-label="Területek">
+    <ul class="m-0 flex list-none flex-wrap justify-center gap-1 p-0" aria-label="Areas">
       {categories.map((cat) => (
         <li>
           <button
@@ -131,7 +131,7 @@ const introInk = categoryById.ai.ink;
           >
             <span class="size-2.5 shrink-0 rounded-[3px]" style={`background:${cat.cap}`}></span>
             {cat.name}
-            <span class="sr-only" data-cat-count={cat.id}>0/{keyCount(cat.id)} felfedezve</span>
+            <span class="sr-only" data-cat-count={cat.id}>0/{keyCount(cat.id)} explored</span>
             <span class="kbi-cat-bar" aria-hidden="true" data-cat-bar={cat.id}></span>
           </button>
         </li>
@@ -139,14 +139,14 @@ const introInk = categoryById.ai.ink;
     </ul>
 
     <p id="kbi-help" class="sr-only">
-      A billentyűzeten a nyilakkal mozoghatsz, Enterrel vagy szóközzel megnyomhatod a gombot. Minden gomb egy rövid
-      szakmai történetet mond el, a „Mesélj tovább” gomb pedig sorban végigvezet rajtuk.
+      Use the arrow keys to move around the keyboard and Enter or Space to press a key. Every key tells a short
+      story about my work, and the “Tell me more” button walks you through them in order.
     </p>
     <noscript>
       <p class="m-0 max-w-[60ch] text-stage-fg/80">
-        Hét terület, amivel dolgozom: AI-alapú fejlesztés (vibecoding), architektúra és API-dizájn, tiszta kód és OOP,
-        adat és backend (Supabase, SQL, Node.js), UI és mozgás (GSAP, Lenis), minőség és tesztelés, valamint az
-        eszközök és a valós ügyfélprojekt tapasztalata.
+        Seven areas I work in: AI-assisted development (vibecoding), architecture and API design, clean code and OOP,
+        data and backend (Supabase, SQL, Node.js), UI and motion (GSAP, Lenis), quality and testing, plus my tools and
+        real client project experience.
       </p>
     </noscript>
   </div>
@@ -405,8 +405,8 @@ const introInk = categoryById.ai.ink;
   const TIP_AFTER = 5;
   const MAX_TILT = 14;
   const SOCKET_PULL = 0.6; // snap radius around a socket, as a fraction of the cap width
-  const TIP_PULL = 'Tipp: a gombokat le is szedheted – fogd meg és húzd el.';
-  const TIP_RETURN = 'Tipp: húzd vissza a kapcsot a helyére – a foglalat magától behúzza.';
+  const TIP_PULL = 'Tip: you can pull the keycaps off – grab one and drag it.';
+  const TIP_RETURN = 'Tip: drag the keycap back to its spot – the socket pulls it in.';
 
   const categoryById = new Map<CategoryId, Category>(categories.map((c) => [c.id, c]));
 
@@ -639,7 +639,7 @@ const introInk = categoryById.ai.ink;
     private setHeader(cap: Keycap) {
       const { category, story } = cap;
       this.dot.style.background = category.ink;
-      this.cat.textContent = `${category.name} · ${cap.def.label || 'Szóköz'}`;
+      this.cat.textContent = `${category.name} · ${cap.def.label || 'Space'}`;
       this.swapTerm(story.term, category.ink);
     }
 
@@ -689,7 +689,7 @@ const introInk = categoryById.ai.ink;
     }
   }
 
-  /* ---------- "Mesélj tovább" ---------- */
+  /* ---------- "Tell me more" ---------- */
 
   class Tour {
     private position = -1;
@@ -973,7 +973,7 @@ const introInk = categoryById.ai.ink;
       for (const cat of categories) {
         const total = this.caps.filter((c) => c.story.category === cat.id);
         const seen = total.filter((c) => this.visited.has(c.def.id)).length;
-        this.root.querySelector(`[data-cat-count="${cat.id}"]`)!.textContent = `${seen}/${total.length} felfedezve`;
+        this.root.querySelector(`[data-cat-count="${cat.id}"]`)!.textContent = `${seen}/${total.length} explored`;
         this.root.querySelector<HTMLElement>(`[data-cat-bar="${cat.id}"]`)!.style.setProperty('--progress', String(seen / total.length));
       }
     }
