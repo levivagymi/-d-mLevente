@@ -1,0 +1,43 @@
+/* ===== CSS ENTRY POINT =====
+   Tailwind v4 without preflight. The existing design system (global.css)
+   lives in the `base` layer, so the site renders exactly as before while
+   Tailwind utilities can still override element-level rules. */
+@layer theme, base, components, utilities;
+
+@import "tailwindcss/theme.css" layer(theme);
+@import "./global.css" layer(base);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+@source not "../../.agents";
+/* The site defines its own .container and toggles a .visible reveal class;
+   keep Tailwind from generating same-named utilities over them. */
+@source not inline("{container,visible}");
+
+/* Utilities resolve to the existing tokens, so dark mode needs no `dark:` variants. */
+@theme inline {
+  --color-desk: var(--bg);
+  --color-paper: var(--bg-card);
+  --color-elevated: var(--bg-elevated);
+  --color-ink: var(--bg-ink);
+  --color-fg: var(--text);
+  --color-fg-soft: var(--text-secondary);
+  --color-muted: var(--text-muted);
+  --color-line: var(--border);
+  --color-line-soft: var(--border-subtle);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-dark);
+
+  --font-serif: var(--font-display);
+  --font-sans: var(--font-body);
+  --font-mono: ui-monospace, "SFMono-Regular", "Cascadia Code", Consolas, monospace;
+}
+
+/* The intro stage is always dark, regardless of the site theme. */
+@theme {
+  --color-stage: #0E0E18;
+  --color-stage-raised: #161624;
+  --color-stage-fg: #F0EEE6;
+  --color-stage-muted: #9A98A6;
+  --color-stage-line: #26263A;
+  --color-stage-accent: #F0A820;
+}

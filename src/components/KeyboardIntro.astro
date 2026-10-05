@@ -1,0 +1,1033 @@
+---
+import { categories, intro, keys, stories, KEYBOARD_WIDTH, KEYBOARD_HEIGHT } from '../data/keyboard';
+
+const categoryById = Object.fromEntries(categories.map((c) => [c.id, c]));
+const keyCount = (id: string) => keys.filter((k) => stories[k.content].category === id).length;
+const introInk = categoryById.ai.ink;
+---
+
+<section
+  id="intro"
+  class="kbi relative isolate overflow-hidden bg-stage text-stage-fg"
+  aria-labelledby="kbi-title"
+  data-kbi
+>
+  <div class="mx-auto flex min-h-[calc(100svh-4rem)] w-full max-w-[1180px] flex-col gap-6 px-4 py-6 sm:px-8">
+    <!-- Running head -->
+    <div class="flex items-baseline justify-between gap-4 font-mono text-[0.68rem] uppercase tracking-[0.18em]">
+      <p class="m-0 leading-normal text-stage-muted">
+        <span id="kbi-title" class="whitespace-nowrap text-stage-fg">Ádám Levente</span><span class="hidden sm:inline"> — szoftverfejlesztő &amp; tesztelő</span>
+      </p>
+      <div class="flex shrink-0 items-baseline gap-5">
+        <span class="text-stage-muted">Felfedezve <span class="text-stage-fg" data-kbi-count>0</span>/{keys.length}</span>
+        <a
+          href="#main-content"
+          class="rounded-sm py-2 text-stage-fg underline decoration-stage-line underline-offset-4 transition-colors hover:text-stage-accent hover:decoration-stage-accent"
+        >
+          Kihagyom ↓
+        </a>
+      </div>
+    </div>
+
+    <!-- Display -->
+    <div class="flex flex-1 flex-col justify-center gap-6 lg:flex-row lg:items-end lg:justify-between lg:gap-10">
+      <div class="min-w-0 max-w-3xl">
+        <p class="m-0 flex items-center gap-2.5 font-mono text-[0.7rem] uppercase leading-normal tracking-[0.16em] text-stage-muted">
+          <span class="size-2 shrink-0 rounded-full" style={`background:${introInk}`} data-kbi-dot></span>
+          <span data-kbi-cat>{intro.label}</span>
+        </p>
+        <h2 class="kbi-term-window m-0 mt-3 font-serif font-black text-stage-fg" aria-hidden="true">
+          <span class="kbi-term" style={`color:${introInk}`} data-kbi-term>{intro.term}</span>
+          <span class="kbi-term invisible" data-kbi-term></span>
+        </h2>
+        <p class="kbi-story m-0 mt-3 max-w-[46ch] text-stage-fg/80 lg:max-w-[60ch]" data-kbi-story>{intro.story}</p>
+        <p class="m-0 mt-3 font-mono text-[0.72rem] leading-relaxed text-stage-muted" data-kbi-hint>
+          <span class="pointer-coarse:hidden">Fuss végig az egérrel a billentyűzeten · kattints · vagy csak gépelj.</span>
+          <span class="hidden pointer-coarse:inline">Söpörj végig az ujjaddal a billentyűzeten, vagy koppints egy gombra.</span>
+        </p>
+        <p class="m-0 mt-3 font-mono text-[0.72rem] leading-relaxed text-stage-accent" hidden data-kbi-tip></p>
+        <p class="sr-only" aria-live="polite" data-kbi-live></p>
+      </div>
+
+      <div class="flex gap-2 lg:shrink-0">
+        <button
+          type="button"
+          class="min-h-12 cursor-pointer rounded-md border border-stage-accent bg-transparent px-4 font-mono text-[0.72rem] uppercase tracking-[0.12em] text-stage-accent transition-colors hover:bg-stage-accent hover:text-stage"
+          hidden
+          data-kbi-putback
+        >
+          Visszarakom
+        </button>
+        <button
+          type="button"
+          class="min-h-12 min-w-12 cursor-pointer rounded-md border border-stage-line bg-transparent px-4 font-sans text-base text-stage-fg transition-colors hover:border-stage-muted"
+          aria-label="Előző történet"
+          data-kbi-prev
+        >
+          ←
+        </button>
+        <button
+          type="button"
+          class="min-h-12 flex-1 cursor-pointer rounded-md border border-stage-accent bg-stage-accent px-6 font-sans text-[0.95rem] font-semibold text-stage transition-colors hover:bg-[#F8C040] lg:flex-none"
+          data-kbi-next
+        >
+          Mesélj tovább →
+        </button>
+      </div>
+    </div>
+
+    <!-- Keyboard -->
+    <div class="kbi-wrap">
+      <div class="kbi-case">
+        <div
+          class="kbi-board"
+          role="group"
+          aria-label="Mesélő billentyűzet: minden gomb egy rövid szakmai történet"
+          aria-describedby="kbi-help"
+          style={`--kw:${KEYBOARD_WIDTH};--kh:${KEYBOARD_HEIGHT}`}
+          data-kbi-board
+        >
+          {keys.map((key, index) => {
+            const story = stories[key.content];
+            const cat = categoryById[story.category];
+            return (
+              <button
+                type="button"
+                class="kbi-key"
+                tabindex={index === 0 ? 0 : -1}
+                aria-label={`${key.label || 'Szóköz'}: ${story.term}`}
+                style={`--x:${key.x};--y:${key.y};--w:${key.w};--cap:${cat.cap};--side:${cat.side};--legend:${cat.legend};--ink:${cat.ink}`}
+                data-key={key.id}
+                data-single={key.label.length === 1 ? '' : undefined}
+                data-space={key.content === 'Space' ? '' : undefined}
+              >
+                <span class="kbi-stem" aria-hidden="true"></span>
+                <span class="kbi-shell" aria-hidden="true" data-shell>
+                  <span class="kbi-top" data-top>
+                    <span class="kbi-legend">
+                      <span class="kbi-long">{key.label}</span>
+                      <span class="kbi-short">{key.short ?? key.label}</span>
+                    </span>
+                    <span class="kbi-sub">{story.sub}</span>
+                  </span>
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+
+    <!-- Legend: the seven areas -->
+    <ul class="m-0 flex list-none flex-wrap justify-center gap-1 p-0" aria-label="Területek">
+      {categories.map((cat) => (
+        <li>
+          <button
+            type="button"
+            class="kbi-cat relative flex min-h-9 cursor-pointer items-center gap-2 rounded-md border border-transparent bg-transparent px-2.5 font-sans text-[0.78rem] text-stage-fg/85 transition-colors hover:border-stage-line"
+            aria-pressed="false"
+            style={`--ink:${cat.ink}`}
+            data-cat-btn={cat.id}
+          >
+            <span class="size-2.5 shrink-0 rounded-[3px]" style={`background:${cat.cap}`}></span>
+            {cat.name}
+            <span class="sr-only" data-cat-count={cat.id}>0/{keyCount(cat.id)} felfedezve</span>
+            <span class="kbi-cat-bar" aria-hidden="true" data-cat-bar={cat.id}></span>
+          </button>
+        </li>
+      ))}
+    </ul>
+
+    <p id="kbi-help" class="sr-only">
+      A billentyűzeten a nyilakkal mozoghatsz, Enterrel vagy szóközzel megnyomhatod a gombot. Minden gomb egy rövid
+      szakmai történetet mond el, a „Mesélj tovább” gomb pedig sorban végigvezet rajtuk.
+    </p>
+    <noscript>
+      <p class="m-0 max-w-[60ch] text-stage-fg/80">
+        Hét terület, amivel dolgozom: AI-alapú fejlesztés (vibecoding), architektúra és API-dizájn, tiszta kód és OOP,
+        adat és backend (Supabase, SQL, Node.js), UI és mozgás (GSAP, Lenis), minőség és tesztelés, valamint az
+        eszközök és a valós ügyfélprojekt tapasztalata.
+      </p>
+    </noscript>
+  </div>
+
+  <div class="pointer-events-none absolute inset-0 z-10" aria-hidden="true" data-kbi-flylayer>
+    {Array.from({ length: 6 }, () => <span class="kbi-fly"></span>)}
+  </div>
+</section>
+
+<style>
+  /* ---------- Display ---------- */
+  .kbi-term-window {
+    display: grid;
+    overflow: hidden;
+    font-size: clamp(2rem, 4.6vw, 3.5rem);
+    line-height: 1.04;
+    letter-spacing: -0.035em;
+    padding-bottom: 0.06em; /* room for descenders */
+  }
+  .kbi-term {
+    grid-area: 1 / 1;
+    white-space: nowrap;
+  }
+  .kbi-term[data-long] {
+    font-size: 0.72em;
+    align-self: end;
+  }
+  /* Reserved lines keep the keyboard from jumping as stories change length. */
+  .kbi-story {
+    font-size: clamp(1.05rem, 1.55vw, 1.3rem);
+    line-height: 1.55;
+    min-height: calc(1.55em * 3);
+  }
+  @media (min-width: 1024px) {
+    .kbi-story { min-height: calc(1.55em * 2); }
+  }
+  .kbi-cat[aria-pressed='true'] {
+    border-color: var(--ink);
+    color: var(--ink);
+  }
+  /* Per-area progress: fills as its keys get explored */
+  .kbi-cat-bar {
+    position: absolute;
+    left: 0.625rem;
+    right: 0.625rem;
+    bottom: 3px;
+    height: 2px;
+    border-radius: 1px;
+    background: var(--ink);
+    transform: scaleX(var(--progress, 0));
+    transform-origin: left;
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* ---------- Keyboard ---------- */
+  .kbi-wrap {
+    container-type: inline-size;
+    width: 100%;
+  }
+  .kbi-case {
+    --pad: 0.3;
+    /* One key unit: fits the width, and leaves room for the display above (~29rem) on short screens. */
+    --u: max(16px, min(54px, calc(100cqw / (18.25 + 2 * 0.3)), calc((100svh - 29rem) / (6.5 + 2 * 0.3))));
+    width: calc(var(--u) * (var(--kw, 18.25) + 2 * var(--pad)));
+    margin-inline: auto;
+    padding: calc(var(--u) * var(--pad));
+    border-radius: calc(var(--u) * 0.32);
+    background: #13131D;
+    box-shadow:
+      0 0 0 1px #24243A,
+      inset 0 1px 0 rgb(255 255 255 / 0.05),
+      0 40px 80px -40px rgb(0 0 0 / 0.9);
+  }
+  .kbi-board {
+    position: relative;
+    width: calc(var(--u) * var(--kw));
+    height: calc(var(--u) * var(--kh));
+    touch-action: none;
+  }
+  /* Dim the whole key (cap + stem as one layer) so the switch never shows through. */
+  .kbi-board[data-focus] .kbi-key:not([data-in-focus]) {
+    opacity: 0.22;
+  }
+
+  .kbi-key {
+    position: absolute;
+    left: calc(var(--u) * var(--x));
+    top: calc(var(--u) * var(--y));
+    width: calc(var(--u) * var(--w));
+    height: var(--u);
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    transition: opacity 0.25s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .kbi-key:focus {
+    outline: none;
+  }
+  /* Socket and switch stem, revealed when a cap is pulled off */
+  .kbi-key::before {
+    content: '';
+    position: absolute;
+    inset: calc(var(--u) * 0.14);
+    border-radius: calc(var(--u) * 0.08);
+    background: #0A0A11;
+    box-shadow: inset 0 0 0 1px #1E1E2C;
+  }
+  /* While its cap is in hand, the empty socket marks where it goes back */
+  .kbi-key[data-dragging]::before {
+    box-shadow: inset 0 0 0 2px var(--ink);
+  }
+  .kbi-stem {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: calc(var(--u) * 0.32);
+    height: calc(var(--u) * 0.32);
+    margin: calc(var(--u) * -0.16) 0 0 calc(var(--u) * -0.16);
+  }
+  .kbi-stem::before,
+  .kbi-stem::after {
+    content: '';
+    position: absolute;
+    background: var(--cap);
+    border-radius: 1px;
+  }
+  .kbi-stem::before { left: 38%; right: 38%; top: 0; bottom: 0; }
+  .kbi-stem::after { top: 38%; bottom: 38%; left: 0; right: 0; }
+
+  .kbi-shell {
+    position: absolute;
+    inset: calc(var(--u) * 0.035);
+    border-radius: calc(var(--u) * 0.12);
+    background: var(--side);
+    box-shadow: 0 calc(var(--u) * 0.06) calc(var(--u) * 0.1) rgb(0 0 0 / 0.55);
+    transition: opacity 0.25s ease;
+  }
+  .kbi-top {
+    position: absolute;
+    top: calc(var(--u) * 0.04);
+    left: calc(var(--u) * 0.07);
+    right: calc(var(--u) * 0.07);
+    bottom: calc(var(--u) * 0.15);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: calc(var(--u) * 0.07) calc(var(--u) * 0.09);
+    overflow: hidden;
+    border-radius: calc(var(--u) * 0.09);
+    background: var(--cap);
+    color: var(--legend);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.24),
+      inset 0 -1px 0 rgb(0 0 0 / 0.12);
+  }
+  .kbi-legend {
+    font-family: var(--font-body);
+    font-size: max(7px, calc(var(--u) * 0.26));
+    font-weight: 600;
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .kbi-key[data-single] .kbi-legend {
+    font-size: max(8px, calc(var(--u) * 0.34));
+  }
+  .kbi-short { display: none; }
+  .kbi-sub {
+    font-family: var(--font-mono);
+    font-size: calc(var(--u) * 0.15);
+    letter-spacing: 0.04em;
+    line-height: 1;
+    white-space: nowrap;
+    opacity: 0.68;
+  }
+  .kbi-key[data-space] .kbi-top {
+    align-items: center;
+    justify-content: center;
+  }
+  .kbi-key[data-space] .kbi-legend { display: none; }
+
+  /* States */
+  .kbi-key[data-visited] .kbi-top::after {
+    content: '';
+    position: absolute;
+    top: calc(var(--u) * 0.08);
+    right: calc(var(--u) * 0.09);
+    width: max(3px, calc(var(--u) * 0.08));
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0.55;
+  }
+  .kbi-key[data-current] .kbi-shell {
+    outline: 2px solid var(--ink);
+    outline-offset: max(1px, calc(var(--u) * 0.04));
+  }
+  .kbi-key:focus-visible .kbi-shell {
+    outline: 2px solid #F0EEE6;
+    outline-offset: max(1px, calc(var(--u) * 0.04));
+  }
+  .kbi-key[data-lit] .kbi-top {
+    filter: brightness(1.3);
+  }
+
+  /* Small keyboards (phones): main legend only, centred */
+  @container (width < 620px) {
+    .kbi-sub { display: none; }
+    .kbi-long { display: none; }
+    .kbi-short { display: inline; }
+    .kbi-top {
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+    }
+    .kbi-key[data-visited] .kbi-top::after {
+      top: 2px;
+      right: 2px;
+    }
+  }
+
+  /* Labels rising from the keys */
+  .kbi-fly {
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    color: var(--ink, #F0EEE6);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+  import { Draggable } from 'gsap/Draggable';
+  import { InertiaPlugin } from 'gsap/InertiaPlugin';
+  import { categories, intro, keys, stories, tourOrder } from '../data/keyboard';
+  import type { Category, CategoryId, KeyDef, Story } from '../data/keyboard';
+
+  gsap.registerPlugin(Draggable, InertiaPlugin);
+
+  const PRESS_DEPTH = 10; // yPercent of the top face
+  const WAVE_DEPTH = 6;
+  const WAVE_RADIUS = 2.2; // key units
+  const WAVE_STEP = 0.028; // seconds of delay per key unit
+  const SETTLE_MS = 150; // stillness before a swept key tells its full story
+  const TIP_AFTER = 5;
+  const MAX_TILT = 14;
+  const SOCKET_PULL = 0.6; // snap radius around a socket, as a fraction of the cap width
+  const TIP_PULL = 'Tipp: a gombokat le is szedheted – fogd meg és húzd el.';
+  const TIP_RETURN = 'Tipp: húzd vissza a kapcsot a helyére – a foglalat magától behúzza.';
+
+  const categoryById = new Map<CategoryId, Category>(categories.map((c) => [c.id, c]));
+
+  interface Motion {
+    reduce: boolean;
+  }
+
+  interface DragHooks {
+    onPull: (cap: Keycap) => void;
+    onDrop: (cap: Keycap) => void;
+    /** The cap stopped moving; `seated` is true when it ended up back in its socket. */
+    onRest: (cap: Keycap, seated: boolean) => void;
+  }
+
+  /* ---------- One physical key ---------- */
+
+  class Keycap {
+    readonly story: Story;
+    readonly category: Category;
+    readonly shell: HTMLElement;
+    readonly top: HTMLElement;
+    neighbours: { cap: Keycap; distance: number }[] = [];
+    held = false;
+    private draggable?: Draggable;
+    private hooks?: DragHooks;
+    private tilt?: (value: number) => void;
+
+    constructor(
+      readonly def: KeyDef,
+      readonly el: HTMLButtonElement,
+      private readonly motion: Motion,
+    ) {
+      this.story = stories[def.content];
+      this.category = categoryById.get(this.story.category)!;
+      this.shell = el.querySelector<HTMLElement>('[data-shell]')!;
+      this.top = el.querySelector<HTMLElement>('[data-top]')!;
+    }
+
+    get center() {
+      return { x: this.def.x + this.def.w / 2, y: this.def.y + 0.5 };
+    }
+
+    get pulled() {
+      return Number(gsap.getProperty(this.shell, 'x')) !== 0 || Number(gsap.getProperty(this.shell, 'y')) !== 0;
+    }
+
+    /** Quick down-and-up, as if the key was struck. */
+    tap(depth = PRESS_DEPTH) {
+      if (this.motion.reduce) return this.flash();
+      gsap.killTweensOf(this.top);
+      gsap
+        .timeline()
+        .to(this.top, { yPercent: depth, duration: 0.06, ease: 'power2.out' })
+        .to(this.top, { yPercent: 0, duration: 0.42, ease: 'back.out(3)' });
+    }
+
+    hold() {
+      this.held = true;
+      if (this.motion.reduce) return this.el.setAttribute('data-lit', '');
+      gsap.killTweensOf(this.top);
+      gsap.to(this.top, { yPercent: PRESS_DEPTH, duration: 0.06, ease: 'power2.out' });
+    }
+
+    release() {
+      this.held = false;
+      if (this.motion.reduce) return this.el.removeAttribute('data-lit');
+      gsap.to(this.top, { yPercent: 0, duration: 0.42, ease: 'back.out(3)' });
+    }
+
+    /** Small sympathetic dip when a neighbouring key is struck. */
+    nudge(depth: number, delay: number) {
+      if (this.held) return;
+      gsap.killTweensOf(this.top);
+      gsap
+        .timeline({ delay })
+        .to(this.top, { yPercent: depth, duration: 0.08, ease: 'power1.out' })
+        .to(this.top, { yPercent: 0, duration: 0.24, ease: 'power2.out' });
+    }
+
+    flash() {
+      this.el.setAttribute('data-lit', '');
+      window.setTimeout(() => this.el.removeAttribute('data-lit'), 160);
+    }
+
+    setCurrent(current: boolean) {
+      this.el.toggleAttribute('data-current', current);
+    }
+
+    markVisited() {
+      this.el.setAttribute('data-visited', '');
+    }
+
+    enableDrag(bounds: HTMLElement, hooks: DragHooks) {
+      const cap = this;
+      this.hooks = hooks;
+      this.tilt = gsap.quickTo(this.shell, 'rotation', { duration: 0.45, ease: 'power3.out' });
+      // The socket is magnetic: near home, the cap snaps in while dragging (liveSnap) and when a throw lands.
+      const homeSnap = (point: { x: number; y: number }) =>
+        Math.hypot(point.x, point.y) < this.shell.offsetWidth * SOCKET_PULL ? { x: 0, y: 0 } : point;
+      [this.draggable] = Draggable.create(this.shell, {
+        type: 'x,y',
+        bounds,
+        inertia: !this.motion.reduce,
+        snap: { points: homeSnap },
+        liveSnap: true,
+        minimumMovement: 8,
+        edgeResistance: 0.8,
+        zIndexBoost: true,
+        cursor: 'pointer',
+        activeCursor: 'grabbing',
+        onDragStart() {
+          cap.el.setAttribute('data-dragging', '');
+          hooks.onPull(cap);
+          gsap.to(cap.shell, { scale: 1.12, duration: cap.motion.reduce ? 0 : 0.2, ease: 'power3.out' });
+        },
+        onDrag: () => this.lean(),
+        onThrowUpdate: () => this.lean(),
+        onDragEnd() {
+          hooks.onDrop(cap);
+          // Released over its socket: drop it in, even if the hand was still moving.
+          if (!cap.pulled) {
+            this.tween?.kill();
+            return cap.seat();
+          }
+          if (!this.isThrowing) cap.land();
+        },
+        onThrowComplete: () => this.land(),
+      });
+    }
+
+    disableDrag() {
+      this.draggable?.kill();
+      this.draggable = undefined;
+      this.hooks = undefined;
+      this.el.removeAttribute('data-dragging');
+      gsap.set(this.shell, { clearProps: 'x,y,rotation,scale,zIndex' });
+    }
+
+    putBack(delay = 0) {
+      return gsap.to(this.shell, {
+        x: 0,
+        y: 0,
+        rotation: 0,
+        scale: 1,
+        delay: this.motion.reduce ? 0 : delay,
+        duration: this.motion.reduce ? 0 : 0.7,
+        ease: 'power3.inOut',
+        onComplete: () => this.seat(),
+      });
+    }
+
+    private lean() {
+      if (this.motion.reduce || !this.tilt) return;
+      // Straighten up while hovering over the socket, so the cap visibly lines up with it.
+      if (!this.pulled) return this.tilt(0);
+      const vx = InertiaPlugin.getVelocity(this.shell, 'x') || 0;
+      this.tilt(gsap.utils.clamp(-MAX_TILT, MAX_TILT, vx / 90));
+    }
+
+    /** Wherever the cap comes to rest: back in its socket, or somewhere on the stage. */
+    private land() {
+      if (!this.pulled) return this.seat();
+      this.el.removeAttribute('data-dragging');
+      if (this.motion.reduce) gsap.set(this.shell, { scale: 1 });
+      else {
+        this.tilt?.(gsap.utils.random(-6, 6));
+        gsap.to(this.shell, { scale: 1, duration: 0.3, ease: 'power2.out' });
+      }
+      this.hooks?.onRest(this, false);
+    }
+
+    /** Clicks the cap back onto its switch. */
+    private seat() {
+      this.el.removeAttribute('data-dragging');
+      gsap.killTweensOf(this.shell, 'rotation,scale');
+      gsap.to(this.shell, {
+        rotation: 0,
+        scale: 1,
+        duration: this.motion.reduce ? 0 : 0.15,
+        ease: 'power2.out',
+        onComplete: () => gsap.set(this.shell, { zIndex: 'auto' }),
+      });
+      this.draggable?.update();
+      this.tap(6);
+      this.hooks?.onRest(this, true);
+    }
+  }
+
+  /* ---------- The display above the keyboard ---------- */
+
+  class StoryScreen {
+    private readonly dot: HTMLElement;
+    private readonly cat: HTMLElement;
+    private readonly terms: HTMLElement[];
+    private readonly story: HTMLElement;
+    private readonly live: HTMLElement;
+    private readonly flyers: HTMLElement[];
+    private readonly flyLayer: HTMLElement;
+    private termIndex = 0;
+    private flyIndex = 0;
+    private shownTerm = intro.term;
+
+    constructor(
+      root: HTMLElement,
+      private readonly motion: Motion,
+    ) {
+      this.dot = root.querySelector('[data-kbi-dot]')!;
+      this.cat = root.querySelector('[data-kbi-cat]')!;
+      this.terms = [...root.querySelectorAll<HTMLElement>('[data-kbi-term]')];
+      this.story = root.querySelector('[data-kbi-story]')!;
+      this.live = root.querySelector('[data-kbi-live]')!;
+      this.flyLayer = root.querySelector('[data-kbi-flylayer]')!;
+      this.flyers = [...this.flyLayer.querySelectorAll<HTMLElement>('.kbi-fly')];
+    }
+
+    /** Fast feedback while sweeping: category and term change, the story waits. */
+    preview(cap: Keycap) {
+      this.setHeader(cap);
+      this.fly(cap);
+    }
+
+    /** Full story, once the visitor settles on a key. */
+    tell(cap: Keycap, { fly }: { fly: boolean }) {
+      this.setHeader(cap);
+      if (fly) this.fly(cap);
+      this.setStory(cap.story.story);
+      this.live.textContent = `${cap.story.term}. ${cap.story.story}`;
+    }
+
+    private setHeader(cap: Keycap) {
+      const { category, story } = cap;
+      this.dot.style.background = category.ink;
+      this.cat.textContent = `${category.name} · ${cap.def.label || 'Szóköz'}`;
+      this.swapTerm(story.term, category.ink);
+    }
+
+    private setStory(text: string) {
+      if (this.story.textContent === text) return;
+      this.story.textContent = text;
+      if (this.motion.reduce) return;
+      gsap.fromTo(this.story, { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: 0.28, ease: 'power2.out', overwrite: true });
+    }
+
+    private swapTerm(term: string, color: string) {
+      if (term === this.shownTerm) return;
+      this.shownTerm = term;
+      const outgoing = this.terms[this.termIndex];
+      this.termIndex = 1 - this.termIndex;
+      const incoming = this.terms[this.termIndex];
+      incoming.textContent = term;
+      incoming.style.color = color;
+      incoming.toggleAttribute('data-long', term.length > 14);
+      if (this.motion.reduce) {
+        gsap.set(outgoing, { autoAlpha: 0 });
+        gsap.set(incoming, { autoAlpha: 1, yPercent: 0 });
+        return;
+      }
+      gsap.to(outgoing, { yPercent: -100, autoAlpha: 0, duration: 0.22, ease: 'power2.in', overwrite: true });
+      gsap.fromTo(
+        incoming,
+        { yPercent: 100, autoAlpha: 1 },
+        { yPercent: 0, duration: 0.32, ease: 'power3.out', overwrite: true },
+      );
+    }
+
+    /** A small label rises out of the struck key. */
+    private fly(cap: Keycap) {
+      if (this.motion.reduce || !cap.story.sub) return;
+      const label = this.flyers[this.flyIndex];
+      this.flyIndex = (this.flyIndex + 1) % this.flyers.length;
+      const layer = this.flyLayer.getBoundingClientRect();
+      const key = cap.shell.getBoundingClientRect();
+      label.textContent = cap.story.sub;
+      label.style.setProperty('--ink', cap.category.ink);
+      const x = key.left - layer.left + key.width / 2;
+      const y = key.top - layer.top;
+      gsap.killTweensOf(label);
+      gsap.set(label, { x, y, xPercent: -50, yPercent: -100, autoAlpha: 1 });
+      gsap.to(label, { y: y - 46, autoAlpha: 0, duration: 0.9, ease: 'power2.out' });
+    }
+  }
+
+  /* ---------- "Mesélj tovább" ---------- */
+
+  class Tour {
+    private position = -1;
+    private filter: CategoryId | null = null;
+
+    get order() {
+      return this.filter ? tourOrder.filter((id) => stories[id].category === this.filter) : tourOrder;
+    }
+
+    focus(category: CategoryId | null) {
+      this.filter = category;
+      this.position = -1;
+    }
+
+    step(direction: 1 | -1) {
+      const order = this.order;
+      this.position = (this.position + direction + order.length) % order.length;
+      return order[this.position];
+    }
+
+    sync(content: string) {
+      const index = this.order.indexOf(content);
+      if (index !== -1) this.position = index;
+    }
+  }
+
+  /* ---------- Orchestration ---------- */
+
+  class KeyboardIntro {
+    private readonly caps: Keycap[];
+    private readonly byId = new Map<string, Keycap>();
+    private readonly byContent = new Map<string, Keycap[]>();
+    private readonly byKey = new Map<string, Keycap>();
+    private readonly byCode = new Map<string, Keycap>();
+    private readonly screen: StoryScreen;
+    private readonly tour = new Tour();
+    private readonly board: HTMLElement;
+    private current?: Keycap;
+    private lastSwept?: Keycap;
+    private settleTimer = 0;
+    private presses = 0;
+    private dragging = false;
+    private inView = false;
+    private focusedCategory: CategoryId | null = null;
+    private readonly visited = new Set<string>();
+
+    constructor(
+      private readonly root: HTMLElement,
+      private readonly motion: Motion,
+      private readonly canPull: boolean,
+    ) {
+      this.board = root.querySelector('[data-kbi-board]')!;
+      this.screen = new StoryScreen(root, motion);
+      this.caps = keys.map((def) => {
+        const el = this.board.querySelector<HTMLButtonElement>(`[data-key="${CSS.escape(def.id)}"]`)!;
+        return new Keycap(def, el, motion);
+      });
+      for (const cap of this.caps) {
+        this.byId.set(cap.def.id, cap);
+        this.byContent.set(cap.def.content, [...(this.byContent.get(cap.def.content) ?? []), cap]);
+        for (const m of cap.def.match) (m.length === 1 ? this.byKey : this.byCode).set(m, cap);
+      }
+      this.computeNeighbours();
+    }
+
+    private readonly cleanups: (() => void)[] = [];
+
+    mount() {
+      this.listen(this.board, 'pointermove', (e) => this.onSweep(e as PointerEvent));
+      this.listen(this.board, 'pointerleave', () => (this.lastSwept = undefined));
+      this.listen(this.board, 'click', (e) => this.onClick(e as MouseEvent));
+      this.listen(this.board, 'dblclick', (e) => this.onDoubleClick(e as MouseEvent));
+      this.listen(this.board, 'keydown', (e) => this.onBoardKey(e as KeyboardEvent));
+      this.listen(window, 'keydown', (e) => this.onPhysical(e as KeyboardEvent, true));
+      this.listen(window, 'keyup', (e) => this.onPhysical(e as KeyboardEvent, false));
+      this.listen(window, 'blur', () => this.caps.forEach((c) => c.held && c.release()));
+
+      this.listen(this.root.querySelector('[data-kbi-next]')!, 'click', () => this.step(1));
+      this.listen(this.root.querySelector('[data-kbi-prev]')!, 'click', () => this.step(-1));
+      this.listen(this.root.querySelector('[data-kbi-putback]')!, 'click', () => this.putBackAll());
+      this.root.querySelectorAll<HTMLButtonElement>('[data-cat-btn]').forEach((btn) => {
+        const id = btn.dataset.catBtn as CategoryId;
+        this.listen(btn, 'click', () => this.toggleCategory(id));
+        this.listen(btn, 'pointerenter', () => this.previewCategory(id));
+        this.listen(btn, 'pointerleave', () => this.previewCategory(this.focusedCategory));
+      });
+
+      const io = new IntersectionObserver(([entry]) => (this.inView = entry.isIntersecting), { threshold: 0.5 });
+      io.observe(this.board);
+      this.cleanups.push(() => io.disconnect());
+
+      if (this.canPull) {
+        for (const cap of this.caps) {
+          cap.enableDrag(this.root, {
+            onPull: () => {
+              this.dragging = true;
+              this.lastSwept = undefined;
+              this.revealTip(TIP_RETURN);
+            },
+            onDrop: () => {
+              this.dragging = false;
+            },
+            onRest: (rested, seated) => {
+              if (seated) this.ripple(rested);
+              this.updatePutBack();
+            },
+          });
+        }
+      }
+    }
+
+    /** Runs when a media condition flips; the next instance starts from a clean board. */
+    destroy() {
+      window.clearTimeout(this.settleTimer);
+      this.cleanups.forEach((fn) => fn());
+      this.cleanups.length = 0;
+      for (const cap of this.caps) {
+        cap.disableDrag();
+        gsap.set(cap.top, { clearProps: 'transform' });
+        cap.el.removeAttribute('data-visited');
+        cap.el.removeAttribute('data-current');
+        cap.el.removeAttribute('data-lit');
+      }
+      this.visited.clear();
+      this.updateCounters();
+      this.updatePutBack();
+      this.root.querySelector<HTMLElement>('[data-kbi-hint]')!.hidden = false;
+      this.root.querySelector<HTMLElement>('[data-kbi-tip]')!.hidden = true;
+    }
+
+    private listen(target: EventTarget, type: string, handler: (e: Event) => void) {
+      target.addEventListener(type, handler);
+      this.cleanups.push(() => target.removeEventListener(type, handler));
+    }
+
+    /* Input handlers */
+
+    private onSweep(e: PointerEvent) {
+      if (this.dragging) return;
+      // Touch pointers are captured by the first key, so resolve the key under the finger ourselves.
+      const hit = document.elementFromPoint(e.clientX, e.clientY)?.closest<HTMLElement>('[data-key]');
+      const cap = hit ? this.byId.get(hit.dataset.key!) : undefined;
+      if (!cap || cap === this.lastSwept) return;
+      this.lastSwept = cap;
+      cap.tap();
+      this.ripple(cap);
+      this.screen.preview(cap);
+      this.visit(cap);
+      window.clearTimeout(this.settleTimer);
+      this.settleTimer = window.setTimeout(() => this.select(cap, { fly: false }), SETTLE_MS);
+    }
+
+    private onClick(e: MouseEvent) {
+      const hit = (e.target as HTMLElement).closest<HTMLElement>('[data-key]');
+      const cap = hit && this.byId.get(hit.dataset.key!);
+      if (cap) this.activate(cap);
+    }
+
+    private onDoubleClick(e: MouseEvent) {
+      const hit = (e.target as HTMLElement).closest<HTMLElement>('[data-key]');
+      const cap = hit && this.byId.get(hit.dataset.key!);
+      if (cap?.pulled) cap.putBack();
+    }
+
+    /** Roving focus: arrows move between keys like on the real board. */
+    private onBoardKey(e: KeyboardEvent) {
+      const from = this.byId.get((e.target as HTMLElement).closest<HTMLElement>('[data-key]')?.dataset.key ?? '');
+      if (!from) return;
+      const dir = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[e.key];
+      if (!dir) return;
+      e.preventDefault();
+      e.stopPropagation();
+      const to = this.nearest(from, dir[0], dir[1]);
+      if (!to) return;
+      from.el.tabIndex = -1;
+      to.el.tabIndex = 0;
+      to.el.focus();
+    }
+
+    /** Mirror the visitor's real keyboard while the intro is on screen. */
+    private onPhysical(e: KeyboardEvent, down: boolean) {
+      if (!this.inView || e.isComposing) return;
+      const target = e.target as HTMLElement | null;
+      if (target?.closest('input, textarea, select, [contenteditable="true"]')) return;
+      // Enter / Space / arrows on a focused control keep their native meaning (button press, roving focus).
+      if (target?.closest('button, a') && /^(Enter| |Arrow.*)$/.test(e.key)) return;
+      const cap = this.byCode.get(e.code) ?? this.byKey.get(e.key.length === 1 ? e.key.toUpperCase() : '');
+      if (!cap || cap.def.content === 'Tab' || cap.def.content === 'Space') return;
+      const isModifier = /^(Shift|Control|Alt|Meta)/.test(e.code);
+      if (!isModifier && (e.ctrlKey || e.metaKey || e.altKey)) return;
+      if (!down) {
+        if (cap.held) cap.release();
+        else if (e.code === 'PrintScreen') this.activate(cap); // Windows only reports its keyup
+        return;
+      }
+      if (e.repeat) return;
+      cap.hold();
+      this.ripple(cap);
+      this.select(cap, { fly: true });
+      this.tour.sync(cap.def.content);
+    }
+
+    /* Actions */
+
+    /** A deliberate press: click, tap or the tour. */
+    private activate(cap: Keycap) {
+      window.clearTimeout(this.settleTimer);
+      cap.tap(PRESS_DEPTH * 1.3);
+      this.ripple(cap);
+      this.select(cap, { fly: true });
+      this.tour.sync(cap.def.content);
+    }
+
+    private step(direction: 1 | -1) {
+      const content = this.tour.step(direction);
+      this.activate(this.byContent.get(content)![0]);
+    }
+
+    private select(cap: Keycap, { fly }: { fly: boolean }) {
+      this.current?.setCurrent(false);
+      this.current = cap;
+      cap.setCurrent(true);
+      this.screen.tell(cap, { fly });
+      this.visit(cap);
+      this.presses += 1;
+      if (this.canPull && this.presses === TIP_AFTER) this.revealTip();
+    }
+
+    private visit(cap: Keycap) {
+      for (const twin of this.byContent.get(cap.def.content)!) {
+        if (this.visited.has(twin.def.id)) continue;
+        this.visited.add(twin.def.id);
+        twin.markVisited();
+      }
+      this.updateCounters();
+    }
+
+    private ripple(origin: Keycap) {
+      if (this.motion.reduce) return;
+      for (const { cap, distance } of origin.neighbours) {
+        cap.nudge(WAVE_DEPTH * (1 - distance / WAVE_RADIUS), distance * WAVE_STEP);
+      }
+    }
+
+    private toggleCategory(id: CategoryId) {
+      this.focusedCategory = this.focusedCategory === id ? null : id;
+      this.tour.focus(this.focusedCategory);
+      this.root.querySelectorAll<HTMLButtonElement>('[data-cat-btn]').forEach((btn) => {
+        btn.setAttribute('aria-pressed', String(btn.dataset.catBtn === this.focusedCategory));
+      });
+      this.previewCategory(this.focusedCategory);
+      if (this.focusedCategory) this.step(1);
+    }
+
+    private previewCategory(id: CategoryId | null) {
+      this.board.toggleAttribute('data-focus', id !== null);
+      for (const cap of this.caps) cap.el.toggleAttribute('data-in-focus', cap.story.category === id);
+    }
+
+    private putBackAll() {
+      this.caps.filter((c) => c.pulled).forEach((cap, i) => cap.putBack(i * 0.035));
+    }
+
+    private updatePutBack() {
+      const button = this.root.querySelector<HTMLButtonElement>('[data-kbi-putback]')!;
+      button.hidden = !this.caps.some((c) => c.pulled);
+    }
+
+    /** The tip takes the place of the first-time hint: same spot, next level. */
+    private revealTip(text = TIP_PULL) {
+      const tip = this.root.querySelector<HTMLElement>('[data-kbi-tip]')!;
+      if (!tip.hidden && tip.textContent === text) return;
+      this.root.querySelector<HTMLElement>('[data-kbi-hint]')!.hidden = true;
+      tip.textContent = text;
+      tip.hidden = false;
+      if (!this.motion.reduce) gsap.from(tip, { autoAlpha: 0, y: 6, duration: 0.4, ease: 'power2.out' });
+    }
+
+    private updateCounters() {
+      this.root.querySelector('[data-kbi-count]')!.textContent = String(this.visited.size);
+      for (const cat of categories) {
+        const total = this.caps.filter((c) => c.story.category === cat.id);
+        const seen = total.filter((c) => this.visited.has(c.def.id)).length;
+        this.root.querySelector(`[data-cat-count="${cat.id}"]`)!.textContent = `${seen}/${total.length} felfedezve`;
+        this.root.querySelector<HTMLElement>(`[data-cat-bar="${cat.id}"]`)!.style.setProperty('--progress', String(seen / total.length));
+      }
+    }
+
+    /* Geometry helpers (key units, straight from the layout data) */
+
+    private computeNeighbours() {
+      for (const cap of this.caps) {
+        const c = cap.center;
+        cap.neighbours = this.caps
+          .filter((other) => other !== cap)
+          .map((other) => ({ cap: other, distance: Math.hypot(other.center.x - c.x, other.center.y - c.y) }))
+          .filter((n) => n.distance <= WAVE_RADIUS)
+          .sort((a, b) => a.distance - b.distance);
+      }
+    }
+
+    private nearest(from: Keycap, dx: number, dy: number) {
+      const c = from.center;
+      let best: Keycap | undefined;
+      let bestScore = Infinity;
+      for (const cap of this.caps) {
+        if (cap === from) continue;
+        const ox = cap.center.x - c.x;
+        const oy = cap.center.y - c.y;
+        const along = ox * dx + oy * dy;
+        if (along <= 0.1) continue;
+        const across = Math.abs(ox * dy - oy * dx);
+        const score = along + across * 3;
+        if (score < bestScore) {
+          bestScore = score;
+          best = cap;
+        }
+      }
+      return best;
+    }
+  }
+
+  /* ---------- Boot ---------- */
+
+  const root = document.querySelector<HTMLElement>('[data-kbi]');
+  if (root) {
+    gsap.matchMedia().add(
+      {
+        always: '(min-width: 0px)',
+        fine: '(pointer: fine)',
+        reduce: '(prefers-reduced-motion: reduce)',
+      },
+      (ctx) => {
+        const { fine, reduce } = ctx.conditions as { fine: boolean; reduce: boolean };
+        const keyboard = new KeyboardIntro(root, { reduce }, fine);
+        keyboard.mount();
+        return () => keyboard.destroy();
+      },
+    );
+  }
+</script>
