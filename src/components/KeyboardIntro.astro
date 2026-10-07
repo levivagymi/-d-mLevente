@@ -1,153 +1,172 @@
 ---
-import { categories, intro, keys, stories, KEYBOARD_WIDTH, KEYBOARD_HEIGHT } from '../data/keyboard';
+import { intro, keys, marquee, KEYBOARD_WIDTH, KEYBOARD_HEIGHT } from '../data/keyboard';
 
-const categoryById = Object.fromEntries(categories.map((c) => [c.id, c]));
-const keyCount = (id: string) => keys.filter((k) => stories[k.content].category === id).length;
-const introInk = categoryById.ai.ink;
+const summary = keys
+  .filter((key) => key.kind === 'letter')
+  .map((key) => `${key.legend} for ${key.term}`)
+  .join(', ');
+
+// Enter is painted first, so the bottom row (and the O sitting in its notch) stays in front of it.
+const paintOrder = [...keys.filter((key) => key.kind === 'enter'), ...keys.filter((key) => key.kind === 'letter')];
+
+// The ISO Enter outline in hundredths of a key unit, inside its 1.55u × 2u box: wide on top, narrower below.
+const ENTER_SHELL = 'M20 3H135A17 17 0 0 1 152 20V180A17 17 0 0 1 135 197H64A17 17 0 0 1 47 180V113A8 8 0 0 0 39 105H20A17 17 0 0 1 3 88V20A17 17 0 0 1 20 3Z';
+const ENTER_FACE = 'M23 6.5H132A13 13 0 0 1 145 19.5V164A13 13 0 0 1 132 177H67A13 13 0 0 1 54 164V91A6 6 0 0 0 48 85H23A13 13 0 0 1 10 72V19.5A13 13 0 0 1 23 6.5Z';
+const ENTER_SOCKET = 'M24 10H131A14 14 0 0 1 145 24V176A14 14 0 0 1 131 190H68A14 14 0 0 1 54 176V102A4 4 0 0 0 50 98H24A14 14 0 0 1 10 84V24A14 14 0 0 1 24 10Z';
+const ENTER_RING = 'M20 -3H135A23 23 0 0 1 158 20V180A23 23 0 0 1 135 203H64A23 23 0 0 1 41 180V113A2 2 0 0 0 39 111H20A23 23 0 0 1 -3 88V20A23 23 0 0 1 20 -3Z';
+const ENTER_BEVELS = 'M11.5 84L5 102M55.5 176L49 194M143.5 176L150 194M52 88L45.5 106.5';
 ---
 
 <section
   id="intro"
   class="kbi relative isolate overflow-hidden bg-stage text-stage-fg"
-  aria-labelledby="kbi-title"
+  aria-label="Portfolio intro"
   data-kbi
 >
-  <div class="mx-auto flex min-h-[calc(100svh-4rem)] w-full max-w-[1180px] flex-col gap-6 px-4 py-6 sm:px-8">
-    <!-- Running head -->
-    <div class="flex items-baseline justify-between gap-4 font-mono text-[0.68rem] uppercase tracking-[0.18em]">
-      <p class="m-0 leading-normal text-stage-muted">
-        <span id="kbi-title" class="whitespace-nowrap text-stage-fg">Ádám Levente</span><span class="hidden sm:inline"> — software developer &amp; tester</span>
-      </p>
-      <div class="flex shrink-0 items-baseline gap-5">
-        <span class="text-stage-muted">Explored <span class="text-stage-fg" data-kbi-count>0</span>/{keys.length}</span>
-        <a
-          href="#main-content"
-          class="rounded-sm py-2 text-stage-fg underline decoration-stage-line underline-offset-4 transition-colors hover:text-stage-accent hover:decoration-stage-accent"
-        >
-          Skip intro ↓
-        </a>
-      </div>
-    </div>
+  <div class="mx-auto flex min-h-[calc(100svh-4rem)] w-full max-w-[1180px] flex-col px-4 pb-5 pt-8 sm:px-8 sm:pt-12">
+    <!-- Headline: a greeting first, then what the pressed letter stands for -->
+    <div>
+      <h2 class="kbi-head m-0 text-stage-fg">
+        <span class="kbi-slot" data-kbi-head>
+          <span class="block">{intro.lead}</span>
+          <span class="block">{intro.before}<em style="color:var(--color-stage-accent)">{intro.term}</em>{intro.after}</span>
+        </span>
+        <span class="kbi-slot invisible" data-kbi-head></span>
+      </h2>
+      <p class="kbi-story m-0 mt-4 max-w-[52ch] text-stage-fg/75" data-kbi-story>{intro.story}</p>
 
-    <!-- Display -->
-    <div class="flex flex-1 flex-col justify-center gap-6 lg:flex-row lg:items-end lg:justify-between lg:gap-10">
-      <div class="min-w-0 max-w-3xl">
-        <p class="m-0 flex items-center gap-2.5 font-mono text-[0.7rem] uppercase leading-normal tracking-[0.16em] text-stage-muted">
-          <span class="size-2 shrink-0 rounded-full" style={`background:${introInk}`} data-kbi-dot></span>
-          <span data-kbi-cat>{intro.label}</span>
-        </p>
-        <h2 class="kbi-term-window m-0 mt-3 font-serif font-black text-stage-fg" aria-hidden="true">
-          <span class="kbi-term" style={`color:${introInk}`} data-kbi-term>{intro.term}</span>
-          <span class="kbi-term invisible" data-kbi-term></span>
-        </h2>
-        <p class="kbi-story m-0 mt-3 max-w-[46ch] text-stage-fg/80 lg:max-w-[60ch]" data-kbi-story>{intro.story}</p>
-        <p class="m-0 mt-3 font-mono text-[0.72rem] leading-relaxed text-stage-muted" data-kbi-hint>
-          <span class="pointer-coarse:hidden">Run your mouse across the keys · click one · or just start typing.</span>
-          <span class="hidden pointer-coarse:inline">Swipe your finger across the keys, or tap one.</span>
-        </p>
-        <p class="m-0 mt-3 font-mono text-[0.72rem] leading-relaxed text-stage-accent" hidden data-kbi-tip></p>
-        <p class="sr-only" aria-live="polite" data-kbi-live></p>
-      </div>
-
-      <div class="flex gap-2 lg:shrink-0">
+      <div class="mt-6 flex flex-wrap items-center gap-x-2 gap-y-3">
         <button
           type="button"
-          class="min-h-12 cursor-pointer rounded-md border border-stage-accent bg-transparent px-4 font-mono text-[0.72rem] uppercase tracking-[0.12em] text-stage-accent transition-colors hover:bg-stage-accent hover:text-stage"
-          hidden
-          data-kbi-putback
-        >
-          Put back
-        </button>
-        <button
-          type="button"
-          class="min-h-12 min-w-12 cursor-pointer rounded-md border border-stage-line bg-transparent px-4 font-sans text-base text-stage-fg transition-colors hover:border-stage-muted"
-          aria-label="Previous story"
+          class="min-h-12 min-w-12 cursor-pointer rounded-full border border-stage-line bg-transparent px-4 font-sans text-base text-stage-fg transition-colors hover:border-stage-fg"
+          aria-label="Previous letter"
           data-kbi-prev
         >
           ←
         </button>
         <button
           type="button"
-          class="min-h-12 flex-1 cursor-pointer rounded-md border border-stage-accent bg-stage-accent px-6 font-sans text-[0.95rem] font-semibold text-stage transition-colors hover:bg-[#F8C040] lg:flex-none"
+          class="min-h-12 cursor-pointer rounded-full border border-stage-fg bg-transparent px-5 font-sans text-[0.95rem] font-semibold text-stage-fg transition-colors hover:bg-stage-fg hover:text-stage"
           data-kbi-next
         >
           Tell me more →
         </button>
+        <a
+          href="#main-content"
+          class="kbi-jump min-h-12 rounded-full border border-stage-accent bg-stage-accent px-5 font-sans text-[0.95rem] font-semibold text-white transition-colors hover:border-stage-accent-strong hover:bg-stage-accent-strong hover:text-white"
+          hidden
+          data-kbi-jump
+        >
+          Jump<span class="hidden sm:inline">&nbsp;to <span data-kbi-jump-term></span></span>&nbsp;↓
+        </a>
+        <button
+          type="button"
+          class="min-h-12 cursor-pointer rounded-full border border-stage-accent bg-transparent px-4 font-mono text-[0.72rem] uppercase tracking-[0.12em] text-stage-accent transition-colors hover:bg-stage-accent hover:text-white"
+          hidden
+          data-kbi-putback
+        >
+          Put back
+        </button>
+        <p class="m-0 ml-auto font-mono text-[0.7rem] uppercase leading-normal tracking-[0.14em] text-stage-muted">
+          <span class="text-stage-fg" data-kbi-count>0</span>/{keys.length} explored ·
+          <a
+            href="#main-content"
+            class="rounded-sm py-2 text-stage-fg underline decoration-stage-line underline-offset-4 transition-colors hover:text-stage-accent hover:decoration-stage-accent"
+          >
+            Skip intro ↓
+          </a>
+        </p>
       </div>
+      <p class="sr-only" aria-live="polite" data-kbi-live></p>
     </div>
 
     <!-- Keyboard -->
     <div class="kbi-wrap">
-      <div class="kbi-case">
-        <div
-          class="kbi-board"
-          role="group"
-          aria-label="Storytelling keyboard: every key is a short story about my work"
-          aria-describedby="kbi-help"
-          style={`--kw:${KEYBOARD_WIDTH};--kh:${KEYBOARD_HEIGHT}`}
-          data-kbi-board
-        >
-          {keys.map((key, index) => {
-            const story = stories[key.content];
-            const cat = categoryById[story.category];
-            return (
-              <button
-                type="button"
-                class="kbi-key"
-                tabindex={index === 0 ? 0 : -1}
-                aria-label={`${key.label || 'Space'}: ${story.term}`}
-                style={`--x:${key.x};--y:${key.y};--w:${key.w};--cap:${cat.cap};--side:${cat.side};--legend:${cat.legend};--ink:${cat.ink}`}
-                data-key={key.id}
-                data-single={key.label.length === 1 ? '' : undefined}
-                data-space={key.content === 'Space' ? '' : undefined}
-              >
-                <span class="kbi-stem" aria-hidden="true"></span>
-                <span class="kbi-shell" aria-hidden="true" data-shell>
-                  <span class="kbi-top" data-top>
-                    <span class="kbi-legend">
-                      <span class="kbi-long">{key.label}</span>
-                      <span class="kbi-short">{key.short ?? key.label}</span>
-                    </span>
-                    <span class="kbi-sub">{story.sub}</span>
-                  </span>
-                </span>
-              </button>
-            );
-          })}
-        </div>
+      <div
+        class="kbi-board"
+        role="group"
+        aria-label="PORTFOLIO keyboard: every letter stands for one part of my portfolio"
+        aria-describedby="kbi-help"
+        style={`--kw:${KEYBOARD_WIDTH};--kh:${KEYBOARD_HEIGHT}`}
+        data-kbi-board
+      >
+        {paintOrder.map((key) => (
+          <button
+            type="button"
+            class="kbi-key"
+            tabindex={key.id === keys[0].id ? 0 : -1}
+            aria-label={key.kind === 'enter' ? `Enter: ${key.sub}` : `${key.legend}: ${key.term}`}
+            style={`--x:${key.x};--y:${key.y};--w:${key.w};--h:${key.h};--cap:${key.cap};--side:${key.side};--ink:${key.ink}`}
+            data-key={key.id}
+            data-enter={key.kind === 'enter' ? '' : undefined}
+          >
+            {key.kind === 'enter' && (
+              <svg class="kbi-enter-socket" viewBox="0 0 155 200" aria-hidden="true">
+                <path d={ENTER_SOCKET} />
+              </svg>
+            )}
+            <span class="kbi-stem" aria-hidden="true"></span>
+            <span class="kbi-shell" aria-hidden="true" data-shell>
+              {key.kind === 'enter' && (
+                <svg class="kbi-enter-body" viewBox="0 0 155 200">
+                  <defs>
+                    <linearGradient id="kbi-enter-side" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0.55" class="kbi-side-top" />
+                      <stop offset="1" class="kbi-side-bottom" />
+                    </linearGradient>
+                  </defs>
+                  <path class="kbi-enter-ring" d={ENTER_RING} />
+                  <path class="kbi-enter-shape" d={ENTER_SHELL} fill="url(#kbi-enter-side)" />
+                  <path class="kbi-enter-bevel" d={ENTER_BEVELS} />
+                </svg>
+              )}
+              <span class="kbi-top" data-top>
+                {key.kind === 'enter' ? (
+                  <>
+                    <svg class="kbi-enter-face" viewBox="10 6.5 135 170.5">
+                      <path d={ENTER_FACE} />
+                    </svg>
+                    <svg class="kbi-enter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="square">
+                      <path d="M19 4v8.5a1.5 1.5 0 0 1-1.5 1.5H6" />
+                      <path d="M10 9.5 5.5 14l4.5 4.5" />
+                    </svg>
+                  </>
+                ) : (
+                  <span class="kbi-legend">{key.legend}</span>
+                )}
+                <span class="kbi-sub">{key.sub}</span>
+              </span>
+            </span>
+          </button>
+        ))}
       </div>
     </div>
 
-    <!-- Legend: the seven areas -->
-    <ul class="m-0 flex list-none flex-wrap justify-center gap-1 p-0" aria-label="Areas">
-      {categories.map((cat) => (
-        <li>
-          <button
-            type="button"
-            class="kbi-cat relative flex min-h-9 cursor-pointer items-center gap-2 rounded-md border border-transparent bg-transparent px-2.5 font-sans text-[0.78rem] text-stage-fg/85 transition-colors hover:border-stage-line"
-            aria-pressed="false"
-            style={`--ink:${cat.ink}`}
-            data-cat-btn={cat.id}
-          >
-            <span class="size-2.5 shrink-0 rounded-[3px]" style={`background:${cat.cap}`}></span>
-            {cat.name}
-            <span class="sr-only" data-cat-count={cat.id}>0/{keyCount(cat.id)} explored</span>
-            <span class="kbi-cat-bar" aria-hidden="true" data-cat-bar={cat.id}></span>
-          </button>
-        </li>
-      ))}
-    </ul>
+    <!-- Hint, replaced by tips as the visitor goes deeper -->
+    <p class="m-0 text-center font-mono text-[0.72rem] leading-relaxed text-stage-muted" data-kbi-hint>
+      <span class="pointer-coarse:hidden">Run your mouse across the keys · click one · or type “portfolio”.</span>
+      <span class="hidden pointer-coarse:inline">Swipe your finger across the keys, or tap one.</span>
+    </p>
+    <p class="m-0 text-center font-mono text-[0.72rem] leading-relaxed text-stage-accent" hidden data-kbi-tip></p>
+
+    <!-- Ticker -->
+    <div class="kbi-marquee mt-5" aria-hidden="true">
+      <div class="kbi-marquee-track">
+        {[0, 1].map(() => (
+          <span class="kbi-marquee-copy">
+            {[...marquee, ...marquee].map((line) => <span>{line}</span>)}
+          </span>
+        ))}
+      </div>
+    </div>
+    <p class="sr-only">{marquee.join('. ')}.</p>
 
     <p id="kbi-help" class="sr-only">
-      Use the arrow keys to move around the keyboard and Enter or Space to press a key. Every key tells a short
-      story about my work, and the “Tell me more” button walks you through them in order.
+      Use the arrow keys to move between the letters and Enter or Space to press one. Each letter of PORTFOLIO stands
+      for one part of my portfolio, and the “Jump” link takes you to it further down the page.
     </p>
     <noscript>
-      <p class="m-0 max-w-[60ch] text-stage-fg/80">
-        Seven areas I work in: AI-assisted development (vibecoding), architecture and API design, clean code and OOP,
-        data and backend (Supabase, SQL, Node.js), UI and motion (GSAP, Lenis), quality and testing, plus my tools and
-        real client project experience.
-      </p>
+      <p class="m-0 mt-4 max-w-[60ch] text-stage-fg/80">PORTFOLIO: {summary}. Scroll down to explore them.</p>
     </noscript>
   </div>
 
@@ -157,78 +176,69 @@ const introInk = categoryById.ai.ink;
 </section>
 
 <style>
-  /* ---------- Display ---------- */
-  .kbi-term-window {
+  /* ---------- Headline ---------- */
+  .kbi-head {
     display: grid;
     overflow: hidden;
-    font-size: clamp(2rem, 4.6vw, 3.5rem);
-    line-height: 1.04;
+    min-height: calc(3 * 1.05em);
+    font-family: var(--font-body);
+    font-size: clamp(2.25rem, 5.2vw, 4.25rem);
+    font-weight: 800;
+    line-height: 1.05;
     letter-spacing: -0.035em;
-    padding-bottom: 0.06em; /* room for descenders */
+    padding-bottom: 0.08em; /* room for the italic descenders */
   }
-  .kbi-term {
+  @media (min-width: 640px) {
+    .kbi-head { min-height: calc(2 * 1.05em); }
+  }
+  .kbi-slot {
     grid-area: 1 / 1;
-    white-space: nowrap;
   }
-  .kbi-term[data-long] {
-    font-size: 0.72em;
-    align-self: end;
+  /* The accent line; JS builds the later ones, so they carry no scoping attribute. */
+  .kbi-slot :global(em) {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.02em;
   }
   /* Reserved lines keep the keyboard from jumping as stories change length. */
   .kbi-story {
-    font-size: clamp(1.05rem, 1.55vw, 1.3rem);
-    line-height: 1.55;
-    min-height: calc(1.55em * 3);
+    font-size: clamp(1.05rem, 1.4vw, 1.25rem);
+    line-height: 1.5;
+    min-height: calc(1.5em * 3);
   }
-  @media (min-width: 1024px) {
-    .kbi-story { min-height: calc(1.55em * 2); }
+  @media (min-width: 640px) {
+    .kbi-story { min-height: calc(1.5em * 2); }
   }
-  .kbi-cat[aria-pressed='true'] {
-    border-color: var(--ink);
-    color: var(--ink);
+  /* The link's display is set here, so the `hidden` attribute has to be restated to win over it. */
+  .kbi-jump {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
   }
-  /* Per-area progress: fills as its keys get explored */
-  .kbi-cat-bar {
-    position: absolute;
-    left: 0.625rem;
-    right: 0.625rem;
-    bottom: 3px;
-    height: 2px;
-    border-radius: 1px;
-    background: var(--ink);
-    transform: scaleX(var(--progress, 0));
-    transform-origin: left;
-    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  .kbi-jump[hidden] {
+    display: none;
   }
 
   /* ---------- Keyboard ---------- */
   .kbi-wrap {
     container-type: inline-size;
+    display: grid;
+    flex: 1;
+    place-items: center;
     width: 100%;
-  }
-  .kbi-case {
-    --pad: 0.3;
-    /* One key unit: fits the width, and leaves room for the display above (~29rem) on short screens. */
-    --u: max(16px, min(54px, calc(100cqw / (18.25 + 2 * 0.3)), calc((100svh - 29rem) / (6.5 + 2 * 0.3))));
-    width: calc(var(--u) * (var(--kw, 18.25) + 2 * var(--pad)));
-    margin-inline: auto;
-    padding: calc(var(--u) * var(--pad));
-    border-radius: calc(var(--u) * 0.32);
-    background: #13131D;
-    box-shadow:
-      0 0 0 1px #24243A,
-      inset 0 1px 0 rgb(255 255 255 / 0.05),
-      0 40px 80px -40px rgb(0 0 0 / 0.9);
+    padding-block: 1.75rem 1.25rem;
   }
   .kbi-board {
+    --outline: #16161D;
+    /* One key unit: fits the width, and leaves room for the headline above and the ticker below. */
+    --u: max(40px, min(140px, calc(100cqw / 6.4), calc((100svh - 34rem) / 2.15)));
+    --line: max(2px, calc(var(--u) * 0.022));
     position: relative;
     width: calc(var(--u) * var(--kw));
     height: calc(var(--u) * var(--kh));
     touch-action: none;
-  }
-  /* Dim the whole key (cap + stem as one layer) so the switch never shows through. */
-  .kbi-board[data-focus] .kbi-key:not([data-in-focus]) {
-    opacity: 0.22;
   }
 
   .kbi-key {
@@ -236,7 +246,7 @@ const introInk = categoryById.ai.ink;
     left: calc(var(--u) * var(--x));
     top: calc(var(--u) * var(--y));
     width: calc(var(--u) * var(--w));
-    height: var(--u);
+    height: calc(var(--u) * var(--h));
     margin: 0;
     padding: 0;
     border: 0;
@@ -244,133 +254,301 @@ const introInk = categoryById.ai.ink;
     color: inherit;
     font: inherit;
     cursor: pointer;
-    transition: opacity 0.25s ease;
     -webkit-tap-highlight-color: transparent;
   }
   .kbi-key:focus {
     outline: none;
   }
-  /* Socket and switch stem, revealed when a cap is pulled off */
+  /* The empty spot on the paper, revealed when a cap is pulled off */
   .kbi-key::before {
     content: '';
     position: absolute;
-    inset: calc(var(--u) * 0.14);
-    border-radius: calc(var(--u) * 0.08);
-    background: #0A0A11;
-    box-shadow: inset 0 0 0 1px #1E1E2C;
+    inset: calc(var(--u) * 0.1);
+    border: var(--line) dashed rgb(22 22 29 / 0.22);
+    border-radius: calc(var(--u) * 0.16);
+    background: rgb(22 22 29 / 0.05);
   }
-  /* While its cap is in hand, the empty socket marks where it goes back */
+  /* While its cap is in hand, the spot marks where it goes back */
   .kbi-key[data-dragging]::before {
-    box-shadow: inset 0 0 0 2px var(--ink);
+    border-style: solid;
+    border-color: var(--ink);
   }
   .kbi-stem {
     position: absolute;
     left: 50%;
     top: 50%;
-    width: calc(var(--u) * 0.32);
-    height: calc(var(--u) * 0.32);
-    margin: calc(var(--u) * -0.16) 0 0 calc(var(--u) * -0.16);
+    width: calc(var(--u) * 0.28);
+    height: calc(var(--u) * 0.28);
+    margin: calc(var(--u) * -0.14) 0 0 calc(var(--u) * -0.14);
   }
   .kbi-stem::before,
   .kbi-stem::after {
     content: '';
     position: absolute;
-    background: var(--cap);
+    background: var(--side);
     border-radius: 1px;
   }
   .kbi-stem::before { left: 38%; right: 38%; top: 0; bottom: 0; }
   .kbi-stem::after { top: 38%; bottom: 38%; left: 0; right: 0; }
 
+  /* The whole cap: a chunky, outlined body whose darker side wall shows below the top face */
   .kbi-shell {
     position: absolute;
-    inset: calc(var(--u) * 0.035);
-    border-radius: calc(var(--u) * 0.12);
-    background: var(--side);
-    box-shadow: 0 calc(var(--u) * 0.06) calc(var(--u) * 0.1) rgb(0 0 0 / 0.55);
-    transition: opacity 0.25s ease;
+    inset: calc(var(--u) * 0.03);
+    overflow: hidden;
+    border: var(--line) solid var(--outline);
+    border-radius: calc(var(--u) * 0.17);
+    background: linear-gradient(180deg, var(--side) 55%, color-mix(in oklab, var(--side) 82%, #000));
+    box-shadow: 0 calc(var(--u) * 0.05) calc(var(--u) * 0.1) rgb(22 22 29 / 0.18);
+  }
+  /* Bevel edges running from the top face down to the bottom corners */
+  .kbi-shell::before,
+  .kbi-shell::after {
+    content: '';
+    position: absolute;
+    bottom: calc(var(--u) * 0.19);
+    width: calc(var(--u) * 0.18);
+    height: var(--line);
+    background: var(--outline);
+  }
+  .kbi-shell::before {
+    left: calc(var(--u) * -0.07);
+    transform-origin: right center;
+    transform: rotate(-55deg);
+  }
+  .kbi-shell::after {
+    right: calc(var(--u) * -0.07);
+    transform-origin: left center;
+    transform: rotate(55deg);
   }
   .kbi-top {
     position: absolute;
-    top: calc(var(--u) * 0.04);
+    top: calc(var(--u) * 0.035);
     left: calc(var(--u) * 0.07);
     right: calc(var(--u) * 0.07);
-    bottom: calc(var(--u) * 0.15);
+    bottom: calc(var(--u) * 0.2);
+    z-index: 1;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    align-items: flex-start;
-    padding: calc(var(--u) * 0.07) calc(var(--u) * 0.09);
+    align-items: center;
+    padding: calc(var(--u) * 0.04) calc(var(--u) * 0.05) calc(var(--u) * 0.07);
     overflow: hidden;
-    border-radius: calc(var(--u) * 0.09);
+    border: var(--line) solid var(--outline);
+    border-radius: calc(var(--u) * 0.13);
     background: var(--cap);
-    color: var(--legend);
-    box-shadow:
-      inset 0 1px 0 rgb(255 255 255 / 0.24),
-      inset 0 -1px 0 rgb(0 0 0 / 0.12);
+    color: var(--outline);
+    box-shadow: inset 0 calc(var(--u) * 0.02) 0 rgb(255 255 255 / 0.35);
   }
   .kbi-legend {
+    flex-shrink: 0;
     font-family: var(--font-body);
-    font-size: max(7px, calc(var(--u) * 0.26));
-    font-weight: 600;
+    font-size: calc(var(--u) * 0.44);
+    font-weight: 800;
     line-height: 1;
-    white-space: nowrap;
+    letter-spacing: -0.02em;
   }
-  .kbi-key[data-single] .kbi-legend {
-    font-size: max(8px, calc(var(--u) * 0.34));
-  }
-  .kbi-short { display: none; }
   .kbi-sub {
-    font-family: var(--font-mono);
-    font-size: calc(var(--u) * 0.15);
-    letter-spacing: 0.04em;
-    line-height: 1;
+    display: -webkit-box;
+    flex-shrink: 0;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+    font-family: var(--font-body);
+    font-size: max(8px, calc(var(--u) * 0.062));
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    line-height: 1.15;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  /* ---------- Enter: an ISO (inverted L) cap, drawn in SVG so outline, wall and face follow the L ---------- */
+  .kbi-key[data-enter]::before {
+    display: none;
+  }
+  .kbi-enter-socket,
+  .kbi-enter-body {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+  .kbi-enter-socket path {
+    fill: rgb(22 22 29 / 0.05);
+    stroke: rgb(22 22 29 / 0.22);
+    stroke-width: var(--line);
+    stroke-dasharray: 6 4;
+    vector-effect: non-scaling-stroke;
+  }
+  .kbi-key[data-enter][data-dragging] .kbi-enter-socket path {
+    stroke: var(--ink);
+    stroke-dasharray: none;
+  }
+  /* The shell is just the draggable frame here; only the painted L takes the pointer. */
+  .kbi-key[data-enter] .kbi-shell {
+    inset: 0;
+    overflow: visible;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+    pointer-events: none;
+  }
+  .kbi-key[data-enter] .kbi-shell::before,
+  .kbi-key[data-enter] .kbi-shell::after {
+    display: none;
+  }
+  .kbi-enter-body {
+    filter: drop-shadow(0 calc(var(--u) * 0.05) calc(var(--u) * 0.05) rgb(22 22 29 / 0.18));
+  }
+  .kbi-side-top { stop-color: var(--side); }
+  .kbi-side-bottom { stop-color: color-mix(in oklab, var(--side) 82%, #000); }
+  .kbi-enter-shape,
+  .kbi-enter-bevel,
+  .kbi-enter-face path {
+    stroke: var(--outline);
+    stroke-width: var(--line);
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+  }
+  .kbi-enter-shape,
+  .kbi-enter-face path {
+    pointer-events: auto;
+  }
+  .kbi-enter-bevel {
+    fill: none;
+  }
+  .kbi-enter-face path {
+    fill: var(--cap);
+  }
+  /* Current / focus ring traces the L instead of a rectangle over the neighbouring O */
+  .kbi-enter-ring {
+    fill: none;
+    stroke: transparent;
+    stroke-width: 3px;
+    vector-effect: non-scaling-stroke;
+  }
+  .kbi-key[data-enter][data-current] .kbi-shell,
+  .kbi-key[data-enter]:focus-visible .kbi-shell {
+    outline: none;
+  }
+  .kbi-key[data-enter][data-current] .kbi-enter-ring {
+    stroke: var(--ink);
+  }
+  .kbi-key[data-enter]:focus-visible .kbi-enter-ring {
+    stroke: var(--color-stage-accent);
+  }
+  /* The moving top face: sized like a letter's, so a press sinks it just as deep; the L face hangs below it. */
+  .kbi-key[data-enter] .kbi-top {
+    top: calc(var(--u) * 0.065);
+    left: calc(var(--u) * 0.1);
+    right: calc(var(--u) * 0.1);
+    bottom: auto;
+    display: block;
+    height: calc(var(--u) * 0.785);
+    padding: 0;
+    overflow: visible;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+    pointer-events: none;
+  }
+  .kbi-enter-face {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: calc(var(--u) * 1.35);
+    height: calc(var(--u) * 1.705);
+    overflow: visible;
+  }
+  .kbi-enter-icon {
+    position: relative;
+    display: block;
+    width: calc(var(--u) * 0.42);
+    height: calc(var(--u) * 0.42);
+    margin: calc(var(--u) * 0.14) 0 0 calc(var(--u) * 0.22);
+  }
+  .kbi-key[data-enter] .kbi-sub {
+    position: absolute;
+    top: calc(var(--u) * 0.98);
+    right: calc(var(--u) * 0.1);
+    display: block;
+    writing-mode: vertical-rl;
     white-space: nowrap;
-    opacity: 0.68;
+    font-size: max(8px, calc(var(--u) * 0.075));
   }
-  .kbi-key[data-space] .kbi-top {
-    align-items: center;
-    justify-content: center;
-  }
-  .kbi-key[data-space] .kbi-legend { display: none; }
 
   /* States */
   .kbi-key[data-visited] .kbi-top::after {
     content: '';
     position: absolute;
-    top: calc(var(--u) * 0.08);
-    right: calc(var(--u) * 0.09);
-    width: max(3px, calc(var(--u) * 0.08));
+    top: calc(var(--u) * 0.06);
+    right: calc(var(--u) * 0.07);
+    width: max(4px, calc(var(--u) * 0.05));
     aspect-ratio: 1;
     border-radius: 50%;
     background: currentColor;
-    opacity: 0.55;
+    opacity: 0.45;
   }
   .kbi-key[data-current] .kbi-shell {
-    outline: 2px solid var(--ink);
-    outline-offset: max(1px, calc(var(--u) * 0.04));
+    outline: 3px solid var(--ink);
+    outline-offset: max(2px, calc(var(--u) * 0.04));
   }
   .kbi-key:focus-visible .kbi-shell {
-    outline: 2px solid #F0EEE6;
-    outline-offset: max(1px, calc(var(--u) * 0.04));
+    outline: 3px solid var(--color-stage-accent);
+    outline-offset: max(2px, calc(var(--u) * 0.04));
   }
   .kbi-key[data-lit] .kbi-top {
-    filter: brightness(1.3);
+    filter: brightness(0.92);
   }
 
-  /* Small keyboards (phones): main legend only, centred */
-  @container (width < 620px) {
+  /* Small keyboards (phones): the legend only, centred */
+  @container (width < 560px) {
     .kbi-sub { display: none; }
-    .kbi-long { display: none; }
-    .kbi-short { display: inline; }
-    .kbi-top {
-      align-items: center;
-      justify-content: center;
-      padding: 0;
-    }
-    .kbi-key[data-visited] .kbi-top::after {
-      top: 2px;
-      right: 2px;
-    }
+    .kbi-top { justify-content: center; }
+  }
+
+  /* ---------- Ticker ---------- */
+  .kbi-marquee {
+    overflow: hidden;
+    padding-block: 0.7rem;
+    border: 1px solid #C9C2F0;
+    border-radius: 9999px;
+    background: #DAD5F6;
+    color: var(--outline, #16161D);
+  }
+  .kbi-marquee-track {
+    display: flex;
+    width: max-content;
+    animation: kbi-marquee 48s linear infinite;
+  }
+  .kbi-marquee:hover .kbi-marquee-track {
+    animation-play-state: paused;
+  }
+  .kbi-marquee-copy {
+    display: flex;
+    flex-shrink: 0;
+  }
+  .kbi-marquee-copy > span {
+    padding-left: 1.5rem;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .kbi-marquee-copy > span::after {
+    content: '·';
+    padding-left: 1.5rem;
+  }
+  @keyframes kbi-marquee {
+    to { transform: translateX(-50%); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .kbi-marquee-track { animation: none; }
   }
 
   /* Labels rising from the keys */
@@ -379,9 +557,10 @@ const introInk = categoryById.ai.ink;
     left: 0;
     top: 0;
     opacity: 0;
-    color: var(--ink, #F0EEE6);
+    color: var(--ink, #16161D);
     font-family: var(--font-mono);
     font-size: 11px;
+    font-weight: 600;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     white-space: nowrap;
@@ -392,23 +571,21 @@ const introInk = categoryById.ai.ink;
   import { gsap } from 'gsap';
   import { Draggable } from 'gsap/Draggable';
   import { InertiaPlugin } from 'gsap/InertiaPlugin';
-  import { categories, intro, keys, stories, tourOrder } from '../data/keyboard';
-  import type { Category, CategoryId, KeyDef, Story } from '../data/keyboard';
+  import { keys } from '../data/keyboard';
+  import type { LetterKey } from '../data/keyboard';
 
   gsap.registerPlugin(Draggable, InertiaPlugin);
 
   const PRESS_DEPTH = 10; // yPercent of the top face
   const WAVE_DEPTH = 6;
-  const WAVE_RADIUS = 2.2; // key units
-  const WAVE_STEP = 0.028; // seconds of delay per key unit
+  const WAVE_RADIUS = 1.6; // key units: direct neighbours only
+  const WAVE_STEP = 0.04; // seconds of delay per key unit
   const SETTLE_MS = 150; // stillness before a swept key tells its full story
   const TIP_AFTER = 5;
   const MAX_TILT = 14;
   const SOCKET_PULL = 0.6; // snap radius around a socket, as a fraction of the cap width
   const TIP_PULL = 'Tip: you can pull the keycaps off – grab one and drag it.';
   const TIP_RETURN = 'Tip: drag the keycap back to its spot – the socket pulls it in.';
-
-  const categoryById = new Map<CategoryId, Category>(categories.map((c) => [c.id, c]));
 
   interface Motion {
     reduce: boolean;
@@ -424,8 +601,6 @@ const introInk = categoryById.ai.ink;
   /* ---------- One physical key ---------- */
 
   class Keycap {
-    readonly story: Story;
-    readonly category: Category;
     readonly shell: HTMLElement;
     readonly top: HTMLElement;
     neighbours: { cap: Keycap; distance: number }[] = [];
@@ -435,18 +610,16 @@ const introInk = categoryById.ai.ink;
     private tilt?: (value: number) => void;
 
     constructor(
-      readonly def: KeyDef,
+      readonly def: LetterKey,
       readonly el: HTMLButtonElement,
       private readonly motion: Motion,
     ) {
-      this.story = stories[def.content];
-      this.category = categoryById.get(this.story.category)!;
       this.shell = el.querySelector<HTMLElement>('[data-shell]')!;
       this.top = el.querySelector<HTMLElement>('[data-top]')!;
     }
 
     get center() {
-      return { x: this.def.x + this.def.w / 2, y: this.def.y + 0.5 };
+      return { x: this.def.x + this.def.w / 2, y: this.def.y + this.def.h / 2 };
     }
 
     get pulled() {
@@ -595,52 +768,57 @@ const introInk = categoryById.ai.ink;
     }
   }
 
-  /* ---------- The display above the keyboard ---------- */
+  /* ---------- The headline and story above the keyboard ---------- */
 
   class StoryScreen {
-    private readonly dot: HTMLElement;
-    private readonly cat: HTMLElement;
-    private readonly terms: HTMLElement[];
+    private readonly slots: HTMLElement[];
     private readonly story: HTMLElement;
     private readonly live: HTMLElement;
+    private readonly jump: HTMLAnchorElement;
+    private readonly jumpTerm: HTMLElement;
     private readonly flyers: HTMLElement[];
     private readonly flyLayer: HTMLElement;
-    private termIndex = 0;
+    private slotIndex = 0;
     private flyIndex = 0;
-    private shownTerm = intro.term;
+    private shownId = '';
 
     constructor(
       root: HTMLElement,
       private readonly motion: Motion,
     ) {
-      this.dot = root.querySelector('[data-kbi-dot]')!;
-      this.cat = root.querySelector('[data-kbi-cat]')!;
-      this.terms = [...root.querySelectorAll<HTMLElement>('[data-kbi-term]')];
+      this.slots = [...root.querySelectorAll<HTMLElement>('[data-kbi-head]')];
       this.story = root.querySelector('[data-kbi-story]')!;
       this.live = root.querySelector('[data-kbi-live]')!;
+      this.jump = root.querySelector('[data-kbi-jump]')!;
+      this.jumpTerm = root.querySelector('[data-kbi-jump-term]')!;
       this.flyLayer = root.querySelector('[data-kbi-flylayer]')!;
       this.flyers = [...this.flyLayer.querySelectorAll<HTMLElement>('.kbi-fly')];
     }
 
-    /** Fast feedback while sweeping: category and term change, the story waits. */
+    /** Fast feedback while sweeping: the headline changes, the story waits. */
     preview(cap: Keycap) {
-      this.setHeader(cap);
+      this.swapHead(cap.def);
       this.fly(cap);
     }
 
-    /** Full story, once the visitor settles on a key. */
+    /** Full story and the way down to its section, once the visitor settles on a key. */
     tell(cap: Keycap, { fly }: { fly: boolean }) {
-      this.setHeader(cap);
+      const { def } = cap;
+      this.swapHead(def);
       if (fly) this.fly(cap);
-      this.setStory(cap.story.story);
-      this.live.textContent = `${cap.story.term}. ${cap.story.story}`;
+      this.setStory(def.story);
+      this.setJump(def);
+      this.live.textContent = `${def.lead} ${def.term}. ${def.story}`;
     }
 
-    private setHeader(cap: Keycap) {
-      const { category, story } = cap;
-      this.dot.style.background = category.ink;
-      this.cat.textContent = `${category.name} · ${cap.def.label || 'Space'}`;
-      this.swapTerm(story.term, category.ink);
+    /** The topic's own section once it exists; until then the closest existing one. */
+    private setJump(def: LetterKey) {
+      const id = document.getElementById(def.target) ? def.target : def.fallback;
+      const label = def.term.charAt(0).toUpperCase() + def.term.slice(1);
+      this.jump.href = `#${id}`;
+      this.jump.setAttribute('aria-label', `Jump to ${label}`);
+      this.jumpTerm.textContent = label;
+      this.jump.hidden = false;
     }
 
     private setStory(text: string) {
@@ -650,15 +828,25 @@ const introInk = categoryById.ai.ink;
       gsap.fromTo(this.story, { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: 0.28, ease: 'power2.out', overwrite: true });
     }
 
-    private swapTerm(term: string, color: string) {
-      if (term === this.shownTerm) return;
-      this.shownTerm = term;
-      const outgoing = this.terms[this.termIndex];
-      this.termIndex = 1 - this.termIndex;
-      const incoming = this.terms[this.termIndex];
-      incoming.textContent = term;
-      incoming.style.color = color;
-      incoming.toggleAttribute('data-long', term.length > 14);
+    /** "P is for" over an italic "Projects.", slid in over the previous headline. */
+    private swapHead(def: LetterKey) {
+      if (def.id === this.shownId) return;
+      this.shownId = def.id;
+      const outgoing = this.slots[this.slotIndex];
+      this.slotIndex = 1 - this.slotIndex;
+      const incoming = this.slots[this.slotIndex];
+
+      const lead = document.createElement('span');
+      lead.className = 'block';
+      lead.textContent = def.lead;
+      const term = document.createElement('em');
+      term.style.color = def.ink;
+      term.textContent = def.term;
+      const line = document.createElement('span');
+      line.className = 'block';
+      line.append(term, '.');
+      incoming.replaceChildren(lead, line);
+
       if (this.motion.reduce) {
         gsap.set(outgoing, { autoAlpha: 0 });
         gsap.set(incoming, { autoAlpha: 1, yPercent: 0 });
@@ -674,13 +862,13 @@ const introInk = categoryById.ai.ink;
 
     /** A small label rises out of the struck key. */
     private fly(cap: Keycap) {
-      if (this.motion.reduce || !cap.story.sub) return;
+      if (this.motion.reduce) return;
       const label = this.flyers[this.flyIndex];
       this.flyIndex = (this.flyIndex + 1) % this.flyers.length;
       const layer = this.flyLayer.getBoundingClientRect();
       const key = cap.shell.getBoundingClientRect();
-      label.textContent = cap.story.sub;
-      label.style.setProperty('--ink', cap.category.ink);
+      label.textContent = cap.def.term;
+      label.style.setProperty('--ink', cap.def.ink);
       const x = key.left - layer.left + key.width / 2;
       const y = key.top - layer.top;
       gsap.killTweensOf(label);
@@ -689,29 +877,18 @@ const introInk = categoryById.ai.ink;
     }
   }
 
-  /* ---------- "Tell me more" ---------- */
+  /* ---------- "Tell me more": the letters in word order, then Enter ---------- */
 
   class Tour {
     private position = -1;
-    private filter: CategoryId | null = null;
-
-    get order() {
-      return this.filter ? tourOrder.filter((id) => stories[id].category === this.filter) : tourOrder;
-    }
-
-    focus(category: CategoryId | null) {
-      this.filter = category;
-      this.position = -1;
-    }
 
     step(direction: 1 | -1) {
-      const order = this.order;
-      this.position = (this.position + direction + order.length) % order.length;
-      return order[this.position];
+      this.position = (this.position + direction + keys.length) % keys.length;
+      return keys[this.position].id;
     }
 
-    sync(content: string) {
-      const index = this.order.indexOf(content);
+    sync(id: string) {
+      const index = keys.findIndex((key) => key.id === id);
       if (index !== -1) this.position = index;
     }
   }
@@ -721,9 +898,10 @@ const introInk = categoryById.ai.ink;
   class KeyboardIntro {
     private readonly caps: Keycap[];
     private readonly byId = new Map<string, Keycap>();
-    private readonly byContent = new Map<string, Keycap[]>();
-    private readonly byKey = new Map<string, Keycap>();
-    private readonly byCode = new Map<string, Keycap>();
+    /** Upper-cased `KeyboardEvent.key` → the caps it can press (three for O). */
+    private readonly byMatch = new Map<string, Keycap[]>();
+    /** Physical key (`KeyboardEvent.code`) → the cap it pressed, so keyup releases the same one. */
+    private readonly heldByCode = new Map<string, Keycap>();
     private readonly screen: StoryScreen;
     private readonly tour = new Tour();
     private readonly board: HTMLElement;
@@ -733,7 +911,6 @@ const introInk = categoryById.ai.ink;
     private presses = 0;
     private dragging = false;
     private inView = false;
-    private focusedCategory: CategoryId | null = null;
     private readonly visited = new Set<string>();
 
     constructor(
@@ -749,8 +926,7 @@ const introInk = categoryById.ai.ink;
       });
       for (const cap of this.caps) {
         this.byId.set(cap.def.id, cap);
-        this.byContent.set(cap.def.content, [...(this.byContent.get(cap.def.content) ?? []), cap]);
-        for (const m of cap.def.match) (m.length === 1 ? this.byKey : this.byCode).set(m, cap);
+        this.byMatch.set(cap.def.match, [...(this.byMatch.get(cap.def.match) ?? []), cap]);
       }
       this.computeNeighbours();
     }
@@ -765,17 +941,11 @@ const introInk = categoryById.ai.ink;
       this.listen(this.board, 'keydown', (e) => this.onBoardKey(e as KeyboardEvent));
       this.listen(window, 'keydown', (e) => this.onPhysical(e as KeyboardEvent, true));
       this.listen(window, 'keyup', (e) => this.onPhysical(e as KeyboardEvent, false));
-      this.listen(window, 'blur', () => this.caps.forEach((c) => c.held && c.release()));
+      this.listen(window, 'blur', () => this.releaseAll());
 
       this.listen(this.root.querySelector('[data-kbi-next]')!, 'click', () => this.step(1));
       this.listen(this.root.querySelector('[data-kbi-prev]')!, 'click', () => this.step(-1));
       this.listen(this.root.querySelector('[data-kbi-putback]')!, 'click', () => this.putBackAll());
-      this.root.querySelectorAll<HTMLButtonElement>('[data-cat-btn]').forEach((btn) => {
-        const id = btn.dataset.catBtn as CategoryId;
-        this.listen(btn, 'click', () => this.toggleCategory(id));
-        this.listen(btn, 'pointerenter', () => this.previewCategory(id));
-        this.listen(btn, 'pointerleave', () => this.previewCategory(this.focusedCategory));
-      });
 
       const io = new IntersectionObserver(([entry]) => (this.inView = entry.isIntersecting), { threshold: 0.5 });
       io.observe(this.board);
@@ -806,15 +976,17 @@ const introInk = categoryById.ai.ink;
       window.clearTimeout(this.settleTimer);
       this.cleanups.forEach((fn) => fn());
       this.cleanups.length = 0;
+      this.heldByCode.clear();
       for (const cap of this.caps) {
         cap.disableDrag();
+        cap.held = false;
         gsap.set(cap.top, { clearProps: 'transform' });
         cap.el.removeAttribute('data-visited');
         cap.el.removeAttribute('data-current');
         cap.el.removeAttribute('data-lit');
       }
       this.visited.clear();
-      this.updateCounters();
+      this.updateCounter();
       this.updatePutBack();
       this.root.querySelector<HTMLElement>('[data-kbi-hint]')!.hidden = false;
       this.root.querySelector<HTMLElement>('[data-kbi-tip]')!.hidden = true;
@@ -854,7 +1026,7 @@ const introInk = categoryById.ai.ink;
       if (cap?.pulled) cap.putBack();
     }
 
-    /** Roving focus: arrows move between keys like on the real board. */
+    /** Roving focus: arrows move between keys like on a real board. */
     private onBoardKey(e: KeyboardEvent) {
       const from = this.byId.get((e.target as HTMLElement).closest<HTMLElement>('[data-key]')?.dataset.key ?? '');
       if (!from) return;
@@ -871,25 +1043,39 @@ const introInk = categoryById.ai.ink;
 
     /** Mirror the visitor's real keyboard while the intro is on screen. */
     private onPhysical(e: KeyboardEvent, down: boolean) {
-      if (!this.inView || e.isComposing) return;
-      const target = e.target as HTMLElement | null;
-      if (target?.closest('input, textarea, select, [contenteditable="true"]')) return;
-      // Enter / Space / arrows on a focused control keep their native meaning (button press, roving focus).
-      if (target?.closest('button, a') && /^(Enter| |Arrow.*)$/.test(e.key)) return;
-      const cap = this.byCode.get(e.code) ?? this.byKey.get(e.key.length === 1 ? e.key.toUpperCase() : '');
-      if (!cap || cap.def.content === 'Tab' || cap.def.content === 'Space') return;
-      const isModifier = /^(Shift|Control|Alt|Meta)/.test(e.code);
-      if (!isModifier && (e.ctrlKey || e.metaKey || e.altKey)) return;
       if (!down) {
-        if (cap.held) cap.release();
-        else if (e.code === 'PrintScreen') this.activate(cap); // Windows only reports its keyup
+        const held = this.heldByCode.get(e.code);
+        if (!held) return;
+        this.heldByCode.delete(e.code);
+        held.release();
         return;
       }
-      if (e.repeat) return;
+      if (!this.inView || e.isComposing || e.repeat || e.ctrlKey || e.metaKey || e.altKey) return;
+      const target = e.target instanceof Element ? e.target : null;
+      if (target?.closest('input, textarea, select, [contenteditable="true"]')) return;
+      // Enter on a focused control keeps its native meaning (pressing that button or link).
+      if (e.key === 'Enter' && target?.closest('button, a')) return;
+      const cap = this.nextFor(e.key.toUpperCase());
+      if (!cap) return;
+      this.heldByCode.get(e.code)?.release();
+      this.heldByCode.set(e.code, cap);
       cap.hold();
       this.ripple(cap);
       this.select(cap, { fly: true });
-      this.tour.sync(cap.def.content);
+      this.tour.sync(cap.def.id);
+    }
+
+    /** The word has three O's: typing moves forward through it, so "portfolio" lights the keys in order. */
+    private nextFor(match: string) {
+      const candidates = this.byMatch.get(match);
+      if (!candidates) return undefined;
+      const after = this.current ? this.caps.indexOf(this.current) : -1;
+      return candidates.find((cap) => this.caps.indexOf(cap) > after) ?? candidates[0];
+    }
+
+    private releaseAll() {
+      this.heldByCode.clear();
+      this.caps.forEach((cap) => cap.held && cap.release());
     }
 
     /* Actions */
@@ -900,12 +1086,11 @@ const introInk = categoryById.ai.ink;
       cap.tap(PRESS_DEPTH * 1.3);
       this.ripple(cap);
       this.select(cap, { fly: true });
-      this.tour.sync(cap.def.content);
+      this.tour.sync(cap.def.id);
     }
 
     private step(direction: 1 | -1) {
-      const content = this.tour.step(direction);
-      this.activate(this.byContent.get(content)![0]);
+      this.activate(this.byId.get(this.tour.step(direction))!);
     }
 
     private select(cap: Keycap, { fly }: { fly: boolean }) {
@@ -919,12 +1104,10 @@ const introInk = categoryById.ai.ink;
     }
 
     private visit(cap: Keycap) {
-      for (const twin of this.byContent.get(cap.def.content)!) {
-        if (this.visited.has(twin.def.id)) continue;
-        this.visited.add(twin.def.id);
-        twin.markVisited();
-      }
-      this.updateCounters();
+      if (this.visited.has(cap.def.id)) return;
+      this.visited.add(cap.def.id);
+      cap.markVisited();
+      this.updateCounter();
     }
 
     private ripple(origin: Keycap) {
@@ -932,21 +1115,6 @@ const introInk = categoryById.ai.ink;
       for (const { cap, distance } of origin.neighbours) {
         cap.nudge(WAVE_DEPTH * (1 - distance / WAVE_RADIUS), distance * WAVE_STEP);
       }
-    }
-
-    private toggleCategory(id: CategoryId) {
-      this.focusedCategory = this.focusedCategory === id ? null : id;
-      this.tour.focus(this.focusedCategory);
-      this.root.querySelectorAll<HTMLButtonElement>('[data-cat-btn]').forEach((btn) => {
-        btn.setAttribute('aria-pressed', String(btn.dataset.catBtn === this.focusedCategory));
-      });
-      this.previewCategory(this.focusedCategory);
-      if (this.focusedCategory) this.step(1);
-    }
-
-    private previewCategory(id: CategoryId | null) {
-      this.board.toggleAttribute('data-focus', id !== null);
-      for (const cap of this.caps) cap.el.toggleAttribute('data-in-focus', cap.story.category === id);
     }
 
     private putBackAll() {
@@ -968,14 +1136,8 @@ const introInk = categoryById.ai.ink;
       if (!this.motion.reduce) gsap.from(tip, { autoAlpha: 0, y: 6, duration: 0.4, ease: 'power2.out' });
     }
 
-    private updateCounters() {
+    private updateCounter() {
       this.root.querySelector('[data-kbi-count]')!.textContent = String(this.visited.size);
-      for (const cat of categories) {
-        const total = this.caps.filter((c) => c.story.category === cat.id);
-        const seen = total.filter((c) => this.visited.has(c.def.id)).length;
-        this.root.querySelector(`[data-cat-count="${cat.id}"]`)!.textContent = `${seen}/${total.length} explored`;
-        this.root.querySelector<HTMLElement>(`[data-cat-bar="${cat.id}"]`)!.style.setProperty('--progress', String(seen / total.length));
-      }
     }
 
     /* Geometry helpers (key units, straight from the layout data) */

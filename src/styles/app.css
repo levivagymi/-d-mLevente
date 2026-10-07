@@ -32,12 +32,13 @@
   --font-mono: ui-monospace, "SFMono-Regular", "Cascadia Code", Consolas, monospace;
 }
 
-/* The intro stage is always dark, regardless of the site theme. */
+/* The intro stage is always light ("paper & riso ink"), regardless of the site theme. */
 @theme {
-  --color-stage: #0E0E18;
-  --color-stage-raised: #161624;
-  --color-stage-fg: #F0EEE6;
-  --color-stage-muted: #9A98A6;
-  --color-stage-line: #26263A;
-  --color-stage-accent: #F0A820;
+  --color-stage: #F0F0EC;
+  --color-stage-raised: #FAFAF7;
+  --color-stage-fg: #16161D;
+  --color-stage-muted: #5E5E6A;
+  --color-stage-line: #D4D3CC;
+  --color-stage-accent: #B0306A;
+  --color-stage-accent-strong: #8E2455;
 }
