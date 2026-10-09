@@ -1,35 +1,21 @@
 ---
+// The bottom of the ink band. "Updated" is the build month, so the date can't go stale while the site is maintained.
+import { person } from '../data/profile';
+
+const built = new Date();
+const year = built.getFullYear();
+const month = built.toLocaleDateString('en-GB', { month: 'short', year: 'numeric' });
 ---
 
-<footer class="footer" id="contact">
-  <div class="container">
-    <div class="footer__grid">
-      <div class="footer__brand">
-        <a href="/" class="footer__logo">Ádám <span>Levente</span></a>
-        <p class="footer__tagline">
-          Software developer and tester.<br />
-          Modern technologies, real project experience.
-        </p>
-        <a href="mailto:adam.levente.daniel@gmail.com" class="footer__email">
-          adam.levente.daniel@gmail.com
+<footer class="site-footer band bg-inv text-inv-muted">
+  <div class="mx-auto w-full max-w-page px-4 pb-8 sm:px-8">
+    <div class="flex flex-wrap items-center justify-between gap-x-8 gap-y-1 border-t border-inv-line pt-4 font-mono text-label uppercase">
+      <p class="sm:flex-1">&copy; {year} {person.name}</p>
+      <p>Updated <time datetime={built.toISOString().slice(0, 7)}>{month}</time></p>
+      <p>
+        <a href="#intro" class="inline-flex min-h-11 items-center text-inv-fg transition-colors duration-150 ease-out hover:text-inv-accent">
+          Back to top ↑
         </a>
-      </div>
-
-      <div>
-        <div class="footer__heading">Sitemap</div>
-        <ul class="footer__links">
-          <li><a href="/" class="footer__link">Home</a></li>
-          <li><a href="/#about" class="footer__link">About</a></li>
-          <li><a href="/#skills" class="footer__link">Tech stack</a></li>
-          <li><a href="/#experience" class="footer__link">Experience</a></li>
-          <li><a href="/#contact" class="footer__link">Contact</a></li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="footer__bottom">
-      <p class="footer__copy">
-        &copy; {new Date().getFullYear()} Ádám Levente – All rights reserved.
       </p>
     </div>
   </div>

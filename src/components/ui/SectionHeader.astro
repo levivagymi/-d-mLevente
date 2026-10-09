@@ -1,0 +1,32 @@
+---
+// Rule, keycaps, mono label and running index, then the section's h2 from the slot.
+import KeycapBadge from './KeycapBadge.astro';
+import { sectionMeta, type SectionId } from '../../data/sections';
+
+interface Props {
+  section: SectionId;
+  headingId: string;
+  /** "band" for the ink contact band. */
+  tone?: 'page' | 'band';
+}
+
+const { section, headingId, tone = 'page' } = Astro.props;
+const meta = sectionMeta(section);
+const band = tone === 'band';
+---
+
+<div
+  class:list={[
+    'flex items-center justify-between gap-4 border-t pt-4 font-mono text-label uppercase',
+    band ? 'border-inv-line text-inv-muted' : 'border-line text-muted',
+  ]}
+>
+  <span class="flex items-center gap-3">
+    <span class="flex gap-1">{meta.keys.map((id) => <KeycapBadge id={id} />)}</span>
+    {meta.label}
+  </span>
+  <span aria-hidden="true">{meta.index}</span>
+</div>
+<h2 id={headingId} class:list={['mt-8 max-w-[22ch] text-h2 text-balance', band ? 'text-inv-fg' : 'text-fg']}>
+  <slot />
+</h2>

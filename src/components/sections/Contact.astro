@@ -1,0 +1,36 @@
+---
+// The closing ink band. No form: email is what a recruiter uses anyway, and it always arrives.
+import SectionHeader from '../ui/SectionHeader.astro';
+import Button from '../ui/Button.astro';
+import CopyEmail from '../ui/CopyEmail.astro';
+import TextLink from '../ui/TextLink.astro';
+import { person, mailto } from '../../data/profile';
+import { cv } from '../../data/cv';
+---
+
+<section id="contact" aria-labelledby="contact-heading" class="band bg-inv text-inv-fg">
+  <div class="mx-auto w-full max-w-page px-4 py-18 sm:px-8 sm:py-28">
+    <SectionHeader section="contact" headingId="contact-heading" tone="band">
+      Looking for an intern or a junior <em class="font-serif font-normal italic tracking-[-0.02em] text-inv-accent">developer?</em>
+    </SectionHeader>
+    <p class="mt-6 max-w-measure text-lead text-inv-muted">Email is the fastest way to reach me. {person.replyTime}</p>
+
+    <CopyEmail tone="band" size="lg" class="mt-10" />
+
+    <div class="mt-8 flex flex-wrap gap-3">
+      {
+        cv && (
+          <Button href={cv.href} download={cv.fileName} variant="band-primary">
+            CV (PDF) <span class="font-normal opacity-80">{cv.size}</span>
+          </Button>
+        )
+      }
+      <Button href={mailto('Internship – Ádám Levente')} variant={cv ? 'band-secondary' : 'band-primary'}>Email me</Button>
+      <Button href={person.github} variant="band-secondary" external>GitHub ↗</Button>
+    </div>
+
+    <p class="mt-12 max-w-measure border-t border-inv-line pt-6 text-body text-inv-muted">
+      Running a small business and need a website? <TextLink href={mailto('Website project')} tone="band">Same address.</TextLink>
+    </p>
+  </div>
+</section>

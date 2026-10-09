@@ -1,0 +1,108 @@
+# Case studies for "Selected work". Schema: src/content.config.ts.
+# Facts only: every line here can be checked on the live site or in the repo it links to.
+
+- id: laguna-lovasklub
+  title: Laguna Lovasklub
+  kind: client
+  status: live
+  period: 2022 – now
+  role: Sole developer, from the first brief to handover and upkeep
+  summary: Website of a riding club in Héreg, in Hungarian, English and German, with a webshop, blog and horse listings.
+  problem: The club needed one site for its horses, competition results, news and shop that Hungarian, English and German visitors can all read.
+  built:
+    - A trilingual site (Hungarian, English, German) with its own URLs per language
+    - Horse listings, competition results, a blog and a webshop
+    - Backend on Supabase, deployed on Vercel
+    - 'The legal pages a shop needs: privacy, cookies, terms, data processors, returns'
+  result:
+    - Live at lagunalovasklub.hu
+    - Delivered on my own, from the first brief to handover, and still maintained by me
+  stack: [Nuxt, Vue, Supabase, Vercel]
+  links:
+    live: https://www.lagunalovasklub.hu
+  featured: true
+  order: 1
+
+- id: vityillo
+  title: Vityilló Vendégház
+  kind: client
+  status: pre-launch
+  period: '2026'
+  role: Sole developer
+  summary: Booking website for a guesthouse in Szomód, in Hungarian, English and German.
+  problem: The guesthouse needed a site where guests can check availability and send a booking request in Hungarian, English or German, with forms that meet GDPR.
+  built:
+    - A statically generated Next.js (App Router) site in three languages
+    - Availability check and booking request, with input validated by Zod schemas on the server
+    - Booking and contact emails through Resend, Google reviews through SerpApi
+    - Cookie consent, and a launch checklist covering legal, GDPR, security, accessibility and indexing
+  result:
+    - Feature-complete and in pre-launch review
+    - Every remaining go/no-go item is tracked in the launch checklist, with an owner
+  testing: 28 Vitest unit tests cover the API guard and the cookie consent.
+  stack: [Next.js, React, TypeScript, Tailwind CSS, Zod, Resend, Vitest]
+  links:
+    code: https://github.com/levivagymi/vityill-
+  featured: true
+  order: 2
+
+- id: osztaly
+  title: Osztály knowledge base
+  kind: school
+  status: live
+  period: May – Jun 2026
+  role: Built for my class
+  summary: A project-management knowledge base for my class, with its posts and sources stored in Supabase.
+  problem: The class needed one shared place for its project-management notes and sources.
+  built:
+    - A static frontend styled with Tailwind CSS, deployed on Vercel
+    - The Postgres schema and seed data as SQL files, hosted on Supabase
+    - Setup documented with an .env.example
+  result:
+    - Live at osztalyproject.vercel.app
+  stack: [JavaScript, Tailwind CSS, Supabase, SQL, Vercel]
+  links:
+    live: https://osztalyproject.vercel.app
+    code: https://github.com/levivagymi/osztalyproject
+  featured: true
+  order: 3
+
+- id: diaknap
+  title: Bánki Diáknap 2026
+  kind: school
+  status: live
+  period: Apr – May 2026
+  role: Website for my school's Student Day
+  summary: Event site for my school's Student Day on 15 May 2026, with a countdown and the day's schedule.
+  problem: Students needed the day's programme in one place.
+  built:
+    - A countdown to the day
+    - The opening ceremony and the full schedule of talks, games and breaks
+  result:
+    - Live at diaknap.vercel.app
+  stack: [HTML, CSS, JavaScript]
+  links:
+    live: https://diaknap.vercel.app
+    code: https://github.com/levivagymi/Diaknap
+  featured: false
+  order: 4
+
+- id: portfolio
+  title: This portfolio
+  kind: personal
+  status: in-progress
+  period: '2026'
+  role: Design and development
+  summary: Astro site with an interactive PORTFOLIO keyboard; everything below the keyboard is plain, static HTML.
+  problem: Recruiters spend seconds on a portfolio, so status, stack and contact have to be readable without playing with the intro.
+  built:
+    - A keyboard intro you can type, click or swipe, usable from the keyboard and with reduced motion
+    - Static sections whose project data is checked against a schema at build time
+  result:
+    - Everything below the keyboard runs on about 1 KB of gzipped JavaScript
+    - Every colour pair passes WCAG AA contrast in both themes, checked by a script
+  stack: [Astro, TypeScript, Tailwind CSS, GSAP]
+  links:
+    code: https://github.com/levivagymi/-d-mLevente
+  featured: false
+  order: 5

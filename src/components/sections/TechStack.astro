@@ -1,0 +1,55 @@
+---
+// Technologies sorted by evidence instead of self-rating: live in production, used in a project, or being learned.
+// One table: columns on wide screens, a block per area on phones with each cell labelled by its tier.
+import SectionHeader from '../ui/SectionHeader.astro';
+import { stack, stackTiers, type StackTier } from '../../data/profile';
+
+const tiers = Object.keys(stackTiers) as StackTier[];
+---
+
+<section id="technologies" aria-labelledby="technologies-heading" class="mx-auto w-full max-w-page px-4 pb-18 sm:px-8 sm:pb-28">
+  <SectionHeader section="technologies" headingId="technologies-heading">Tech stack</SectionHeader>
+  <p class="mt-6 max-w-measure text-lead text-fg-soft">
+    Sorted by evidence, not by how confident I feel: what runs on a live site, what I have built with, and what I am learning.
+  </p>
+
+  <table class="mt-12 w-full border-collapse text-left">
+    <caption class="sr-only">Technologies by area, sorted by where I have used them</caption>
+    <thead class="hidden md:table-header-group">
+      <tr class="border-b border-line-strong">
+        <th scope="col" class="w-[18%] py-3 pr-6 align-bottom font-mono text-label font-normal uppercase text-muted">Area</th>
+        {
+          tiers.map((tier) => (
+            <th scope="col" class="py-3 pr-6 align-bottom">
+              <span class="block font-mono text-label font-normal uppercase text-fg">{stackTiers[tier].label}</span>
+              <span class="mt-1 block text-small font-normal text-muted">{stackTiers[tier].note}</span>
+            </th>
+          ))
+        }
+      </tr>
+    </thead>
+    <tbody>
+      {
+        stack.map((row) => (
+          <tr class="block border-b border-line py-4 md:table-row md:py-0">
+            <th scope="row" class="block pb-2 align-top text-body font-bold text-fg md:table-cell md:py-4 md:pr-6">
+              {row.area}
+            </th>
+            {tiers.map((tier) => (
+              <td
+                data-tier={stackTiers[tier].label}
+                class:list={[
+                  'grid-cols-[6.5rem_1fr] gap-2 py-1 align-top text-body text-fg md:table-cell md:py-4 md:pr-6',
+                  'before:pt-[0.3rem] before:font-mono before:text-label before:uppercase before:text-muted before:content-[attr(data-tier)] md:before:hidden',
+                  row.items[tier].length > 0 ? 'grid' : 'hidden',
+                ]}
+              >
+                {row.items[tier].length > 0 ? row.items[tier].join(', ') : <span class="text-muted" aria-label="none">—</span>}
+              </td>
+            ))}
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</section>

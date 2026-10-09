@@ -1,0 +1,83 @@
+---
+// For whoever reviews code: where it lives, how a project is kept in order, and every link in one list.
+import SectionHeader from '../ui/SectionHeader.astro';
+import KeycapBadge from '../ui/KeycapBadge.astro';
+import TextLink from '../ui/TextLink.astro';
+import { person, repos, practices, allLinks, type LinkKind } from '../../data/profile';
+
+const kindLabel: Record<LinkKind, string> = { live: 'Live', code: 'Code', profile: 'Profile', doc: 'Doc' };
+---
+
+<section id="code" aria-labelledby="code-heading" class="mx-auto w-full max-w-page px-4 pb-18 sm:px-8 sm:pb-28">
+  <SectionHeader section="code" headingId="code-heading">Code &amp; docs</SectionHeader>
+
+  <div id="repositories" class="mt-12">
+    <div class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
+      <h3 class="flex items-center gap-3 text-h3 text-fg"><KeycapBadge id="R" /> Repositories</h3>
+      <TextLink href={person.github} external>github.com/{person.githubHandle}</TextLink>
+    </div>
+    <ul class="mt-6 grid gap-4 md:grid-cols-2">
+      {
+        repos.map((repo) => (
+          <li>
+            <a
+              href={repo.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="group flex h-full flex-col rounded-lg border border-line bg-surface p-5 text-fg transition-colors duration-150 ease-out hover:border-line-strong hover:text-fg"
+            >
+              <span class="font-mono text-small font-semibold">
+                {repo.name}
+                <span class="text-muted transition-colors duration-150 group-hover:text-accent" aria-hidden="true">
+                  ↗
+                </span>
+                <span class="sr-only">(opens in a new tab)</span>
+              </span>
+              <span class="mt-2 text-body text-fg-soft">{repo.summary}</span>
+              <span class="mt-auto pt-4 font-mono text-label uppercase text-muted">
+                {repo.language} · Updated {repo.updated}
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+
+  <div id="organization" class="mt-16">
+    <h3 class="flex items-center gap-3 text-h3 text-fg"><KeycapBadge id="O2" /> How I keep a project in order</h3>
+    <ol class="mt-6 grid gap-4 md:grid-cols-3">
+      {
+        practices.map((practice) => (
+          <li class="flex flex-col rounded-lg border border-line bg-surface p-5">
+            <h4 class="text-lg tracking-[-0.02em] text-fg">{practice.title}</h4>
+            <p class="mt-2 text-body text-fg-soft">{practice.summary}</p>
+            <p class="mt-auto pt-4 font-mono text-small">
+              <TextLink href={practice.evidence.href} external>
+                {practice.evidence.label}
+              </TextLink>
+            </p>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+
+  <div id="links" class="mt-16">
+    <h3 class="flex items-center gap-3 text-h3 text-fg"><KeycapBadge id="L" /> Links &amp; demos</h3>
+    <ul class="mt-6 border-t border-line">
+      {
+        allLinks.map((link) => (
+          <li class="grid grid-cols-[5rem_1fr] items-baseline gap-4 border-b border-line py-3">
+            <span class="font-mono text-label uppercase text-muted">{kindLabel[link.kind]}</span>
+            <span class="min-w-0 break-words">
+              <TextLink href={link.href} external>
+                {link.label}
+              </TextLink>
+            </span>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

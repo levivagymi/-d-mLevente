@@ -1,0 +1,25 @@
+---
+// Inline link: accent text over a quiet underline that takes the text colour on hover.
+interface Props {
+  href: string;
+  /** Opens in a new tab, marked with ↗ and announced to screen readers. */
+  external?: boolean;
+  tone?: 'page' | 'band';
+  class?: string;
+}
+
+const { href, external = false, tone = 'page', class: className } = Astro.props;
+---
+
+<a
+  href={href}
+  target={external ? '_blank' : undefined}
+  rel={external ? 'noopener noreferrer' : undefined}
+  class:list={[
+    'font-semibold underline underline-offset-4 transition-[color,text-decoration-color] duration-150 ease-out hover:decoration-current',
+    tone === 'band' ? 'text-inv-accent decoration-inv-line hover:text-inv-fg' : 'text-accent decoration-line hover:text-accent-strong',
+    className,
+  ]}
+>
+  <slot />{external && <span aria-hidden="true">&nbsp;↗</span>}{external && <span class="sr-only"> (opens in a new tab)</span>}
+</a>

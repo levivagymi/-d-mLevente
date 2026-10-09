@@ -1,0 +1,48 @@
+---
+// The ten-second answer: who, what for, from when, with what, and how to get in touch.
+import SectionHeader from '../ui/SectionHeader.astro';
+import Button from '../ui/Button.astro';
+import TextLink from '../ui/TextLink.astro';
+import CopyEmail from '../ui/CopyEmail.astro';
+import { overview, person, mailto } from '../../data/profile';
+import { cv } from '../../data/cv';
+---
+
+<section id="overview" aria-labelledby="overview-heading" class="mx-auto w-full max-w-page px-4 pb-18 pt-14 sm:px-8 sm:pb-28 sm:pt-20">
+  <SectionHeader section="overview" headingId="overview-heading">
+    I build it, then I try to <em class="font-serif font-normal italic tracking-[-0.02em] text-accent">break it.</em>
+  </SectionHeader>
+
+  <div class="mt-10 grid gap-10 lg:grid-cols-12 lg:gap-8">
+    <p class="max-w-measure text-lead text-fg-soft lg:col-span-5">{overview.lead}</p>
+
+    <dl class="border-t border-line lg:col-span-7">
+      {
+        overview.spec.map((row) => (
+          <div class="grid gap-1 border-b border-line py-3 sm:grid-cols-[9rem_1fr] sm:gap-4">
+            <dt class="pt-[0.2rem] font-mono text-label uppercase text-muted">{row.label}</dt>
+            <dd class:list={['text-body', row.status ? 'flex items-baseline gap-2 font-semibold text-ok' : 'text-fg']}>
+              {row.status && <span class="size-2 shrink-0 translate-y-[-0.1em] rounded-full bg-ok" aria-hidden="true" />}
+              <span>{row.value}</span>
+            </dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+
+  <div class="mt-10 flex flex-wrap items-center gap-x-6 gap-y-4">
+    <div class="flex flex-wrap gap-3">
+      {
+        cv && (
+          <Button href={cv.href} download={cv.fileName}>
+            CV (PDF) <span class="font-normal opacity-80">{cv.size}</span>
+          </Button>
+        )
+      }
+      <Button href={mailto('Internship – Ádám Levente')} variant={cv ? 'secondary' : 'primary'}>Email me</Button>
+    </div>
+    <CopyEmail />
+    <TextLink href={person.github} external>GitHub</TextLink>
+  </div>
+</section>

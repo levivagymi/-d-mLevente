@@ -1,0 +1,32 @@
+---
+// What I'm after and what I care about, in short lists rather than an essay.
+import SectionHeader from '../ui/SectionHeader.astro';
+import KeycapBadge from '../ui/KeycapBadge.astro';
+import { lookingFor, interests } from '../../data/profile';
+
+const columns = [
+  { id: 'openness', key: 'O3', title: 'What I’m looking for', items: lookingFor },
+  { id: 'interests', key: 'I', title: 'What I’m into', items: interests },
+];
+---
+
+<section id="about" aria-labelledby="about-heading" class="mx-auto w-full max-w-page px-4 pb-18 sm:px-8 sm:pb-28">
+  <SectionHeader section="about" headingId="about-heading">Beyond the code</SectionHeader>
+
+  <div class="mt-12 grid gap-12 md:grid-cols-2 md:gap-8">
+    {
+      columns.map((column) => (
+        <div id={column.id}>
+          <h3 class="flex items-center gap-3 text-h3 text-fg">
+            <KeycapBadge id={column.key} /> {column.title}
+          </h3>
+          <ul class="mt-6 border-t border-line">
+            {column.items.map((item) => (
+              <li class="border-b border-line py-3 text-body text-fg">{item}</li>
+            ))}
+          </ul>
+        </div>
+      ))
+    }
+  </div>
+</section>

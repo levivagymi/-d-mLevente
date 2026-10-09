@@ -9,27 +9,60 @@
 @import "tailwindcss/utilities.css" layer(utilities);
 
 @source not "../../.agents";
-/* The site defines its own .container and toggles a .visible reveal class;
-   keep Tailwind from generating same-named utilities over them. */
+/* "container" and "visible" only appear in the intro's CSS (container-type, overflow: visible);
+   keep Tailwind from generating utilities nobody uses for them. */
 @source not inline("{container,visible}");
 
-/* Utilities resolve to the existing tokens, so dark mode needs no `dark:` variants. */
+/* Utilities resolve to the tokens in global.css, so dark mode needs no `dark:` variants. */
 @theme inline {
-  --color-desk: var(--bg);
-  --color-paper: var(--bg-card);
-  --color-elevated: var(--bg-elevated);
-  --color-ink: var(--bg-ink);
-  --color-fg: var(--text);
-  --color-fg-soft: var(--text-secondary);
-  --color-muted: var(--text-muted);
-  --color-line: var(--border);
-  --color-line-soft: var(--border-subtle);
+  --color-page: var(--bg);
+  --color-surface: var(--surface);
+  --color-sunk: var(--surface-sunk);
+  --color-fg: var(--fg);
+  --color-fg-soft: var(--fg-soft);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
   --color-accent: var(--accent);
-  --color-accent-strong: var(--accent-dark);
+  --color-accent-strong: var(--accent-strong);
+  --color-on-accent: var(--on-accent);
+  --color-ok: var(--ok);
+  --color-inv: var(--inv-bg);
+  --color-inv-surface: var(--inv-surface);
+  --color-inv-fg: var(--inv-fg);
+  --color-inv-muted: var(--inv-muted);
+  --color-inv-line: var(--inv-line);
+  --color-inv-accent: var(--inv-accent);
 
   --font-serif: var(--font-display);
   --font-sans: var(--font-body);
   --font-mono: ui-monospace, "SFMono-Regular", "Cascadia Code", Consolas, monospace;
+}
+
+/* Type ramp and layout of the page below the intro. Labels match the intro's mono micro-copy. */
+@theme {
+  --text-label: 0.72rem;
+  --text-label--line-height: 1.5;
+  --text-label--letter-spacing: 0.12em;
+  --text-button: 0.95rem;
+  --text-small: 0.875rem;
+  --text-small--line-height: 1.5;
+  --text-body: 1.0625rem;
+  --text-body--line-height: 1.6;
+  --text-lead: clamp(1.125rem, 1.05rem + 0.4vw, 1.25rem);
+  --text-lead--line-height: 1.5;
+  --text-h3: clamp(1.375rem, 1.2rem + 0.8vw, 1.75rem);
+  --text-h3--line-height: 1.15;
+  --text-h3--letter-spacing: -0.02em;
+  --text-h2: clamp(2rem, 1.4rem + 2.6vw, 3.25rem);
+  --text-h2--line-height: 1.05;
+  --text-h2--letter-spacing: -0.035em;
+  --text-display: clamp(1.5rem, 0.9rem + 2.8vw, 2.75rem);
+  --text-display--line-height: 1.1;
+  --text-display--letter-spacing: -0.03em;
+
+  --container-page: 1180px;
+  --container-measure: 62ch;
 }
 
 /* The intro stage is always light ("paper & riso ink"), regardless of the site theme. */

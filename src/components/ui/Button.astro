@@ -1,0 +1,37 @@
+---
+// Link styled as the intro's pill buttons. Presses sink 1px, like a keycap.
+interface Props {
+  href: string;
+  variant?: 'primary' | 'secondary' | 'band-primary' | 'band-secondary';
+  /** Opens in a new tab and says so to screen readers. */
+  external?: boolean;
+  /** Suggested file name for downloads. */
+  download?: string;
+  class?: string;
+}
+
+const { href, variant = 'primary', external = false, download, class: className } = Astro.props;
+
+const variants = {
+  primary: 'border-accent bg-accent text-on-accent hover:border-accent-strong hover:bg-accent-strong hover:text-on-accent',
+  secondary: 'border-line-strong bg-transparent text-fg hover:bg-fg hover:text-page',
+  'band-primary': 'border-inv-accent bg-inv-accent text-inv hover:border-inv-fg hover:bg-inv-fg hover:text-inv',
+  'band-secondary': 'border-inv-line bg-transparent text-inv-fg hover:border-inv-fg hover:bg-inv-fg hover:text-inv',
+} as const;
+---
+
+<a
+  href={href}
+  download={download}
+  target={external ? '_blank' : undefined}
+  rel={external ? 'noopener noreferrer' : undefined}
+  class:list={[
+    'inline-flex min-h-12 items-center justify-center gap-2 rounded-full border px-5 font-sans text-button font-semibold',
+    'transition-[color,background-color,border-color,transform] duration-150 ease-out active:translate-y-px motion-reduce:active:translate-y-0',
+    variants[variant],
+    className,
+  ]}
+>
+  <slot />
+  {external && <span class="sr-only">(opens in a new tab)</span>}
+</a>

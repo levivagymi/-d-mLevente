@@ -3,46 +3,51 @@ import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import KeyboardIntro from '../components/KeyboardIntro.astro';
-import Hero from '../components/Hero.astro';
-import About from '../components/About.astro';
-import Skills from '../components/Skills.astro';
-import Experience from '../components/Experience.astro';
+import Overview from '../components/sections/Overview.astro';
+import Projects from '../components/sections/Projects.astro';
+import TechStack from '../components/sections/TechStack.astro';
+import Experience from '../components/sections/Experience.astro';
+import CodeAndDocs from '../components/sections/CodeAndDocs.astro';
+import About from '../components/sections/About.astro';
+import Contact from '../components/sections/Contact.astro';
+import { person, stack } from '../data/profile';
+
+const knowsAbout = [...new Set(stack.flatMap((area) => [...area.items.shipped, ...area.items.built]))];
 
 const personSchema = {
   '@context': 'https://schema.org',
   '@type': 'Person',
   '@id': 'https://adamlevente.hu/#person',
-  name: 'Ádám Levente Dániel',
-  jobTitle: 'Software Developer and Tester',
+  name: person.name,
+  jobTitle: person.role,
   description:
-    'Final-year software development and testing student – frontend, backend, databases, deployment.',
+    'Final-year IT student on the software development and testing track, open to internships and junior web or QA roles.',
   url: 'https://adamlevente.hu',
-  knowsAbout: [
-    'Web development',
-    'Software testing',
-    'JavaScript',
-    'Python',
-    'Java',
-    'Supabase',
-    'Vercel',
-  ],
-  sameAs: [],
+  email: `mailto:${person.email}`,
+  knowsAbout,
+  sameAs: [person.github],
 };
 ---
 
 <Layout
-  title="Ádám Levente Dániel – Software Developer & Tester"
-  description="Final-year software developer and tester – frontend, backend, databases, deployment. Modern technologies, real project experience."
+  title="Ádám Levente Dániel – Web Developer & Software Tester"
+  description="Final-year IT student open to internships and junior web or QA roles. Two client websites, case studies, tech stack and contact details."
   canonical="https://adamlevente.hu/"
   schema={personSchema}
 >
   <Header />
   <main>
+    <h1 class="sr-only">{person.name} – {person.role}</h1>
     <KeyboardIntro />
-    <Hero />
-    <About />
-    <Skills />
-    <Experience />
+    <div id="main-content" tabindex="-1" class="outline-none">
+      <Overview />
+      <Projects />
+      <TechStack />
+      <Experience />
+      <CodeAndDocs />
+      <About />
+      <Contact />
+    </div>
   </main>
   <Footer />
 </Layout>
